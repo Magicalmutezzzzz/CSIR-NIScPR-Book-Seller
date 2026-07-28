@@ -1,36 +1,37 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from app.database.init_db import check_database
+
 app = FastAPI(
     title="CSIR-NIScPR Publications API",
     version="1.0.0",
-    description="Backend API for CSIR-NIScPR Online Publications Platform"
 )
-
-origins = [
-    "http://localhost:5173",
-]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=["http://localhost:5173"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
 
+@app.on_event("startup")
+def startup():
+    check_database()
+
+
 @app.get("/")
-async def root():
+def root():
     return {
         "message": "CSIR-NIScPR Publications API Running 🚀"
     }
 
 
 @app.get("/health")
-async def health():
+def health():
     return {
         "status": "healthy",
-        "database": "Not Connected Yet",
-        "version": "1.0.0"
+        "database": "connected"
     }
