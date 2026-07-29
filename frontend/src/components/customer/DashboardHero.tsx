@@ -4,24 +4,26 @@ import {
   ScrollText,
   ShoppingCart,
 } from "lucide-react";
+import { publicationService } from "../../services/publicationService";
 
 export default function DashboardHero() {
+  const publications = publicationService.getAll();
   const cards = [
     {
       title: "Books",
-      value: "2,450+",
+      value: String(publications.filter((item) => item.type === "Book").length),
       icon: BookOpen,
       color: "bg-blue-100 text-blue-700",
     },
     {
       title: "Journals",
-      value: "850+",
+      value: String(publications.filter((item) => item.type === "Journal").length),
       icon: Newspaper,
       color: "bg-green-100 text-green-700",
     },
     {
       title: "Magazines",
-      value: "320+",
+      value: String(publications.filter((item) => item.type === "Magazine").length),
       icon: ScrollText,
       color: "bg-orange-100 text-orange-700",
     },

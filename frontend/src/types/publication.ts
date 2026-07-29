@@ -2,7 +2,8 @@ export type PublicationType =
   | "Book"
   | "Journal"
   | "Magazine"
-  | "Research";
+  | "Research"
+  | "Other";
 
 export interface Publication {
   id: number;

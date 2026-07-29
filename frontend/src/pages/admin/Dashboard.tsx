@@ -8,8 +8,10 @@ import {
 import StatCard from "../../components/admin/StatCard";
 import QuickActions from "../../components/admin/QuickActions";
 import RecentPublications from "../../components/admin/RecentPublications";
+import { publicationService } from "../../services/publicationService";
 
 export default function Dashboard() {
+  const publications = publicationService.getAll();
   return (
     <div className="space-y-8">
 
@@ -30,28 +32,28 @@ export default function Dashboard() {
 
         <StatCard
           title="Books"
-          value="1,245"
+          value={String(publications.filter((item) => item.type === "Book").length)}
           icon={BookOpen}
           color="bg-blue-600"
         />
 
         <StatCard
           title="Journals"
-          value="326"
+          value={String(publications.filter((item) => item.type === "Journal").length)}
           icon={Library}
           color="bg-green-600"
         />
 
         <StatCard
           title="Magazines"
-          value="94"
+          value={String(publications.filter((item) => item.type === "Magazine").length)}
           icon={Newspaper}
           color="bg-orange-500"
         />
 
         <StatCard
-          title="Orders"
-          value="523"
+          title="Research"
+          value={String(publications.filter((item) => item.type === "Research").length)}
           icon={ShoppingCart}
           color="bg-purple-600"
         />

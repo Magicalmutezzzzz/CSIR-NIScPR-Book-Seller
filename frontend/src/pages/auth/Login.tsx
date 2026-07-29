@@ -8,6 +8,7 @@ import SocialLogin from "../../components/auth/SocialLogin";
 
 import { loginSchema } from "../../validations/authSchema";
 import type { LoginFormData } from "../../validations/authSchema";
+import { authenticate, getDashboardPath } from "../../services/authService";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -21,15 +22,15 @@ export default function Login() {
   });
 
   const onSubmit = async (data: LoginFormData) => {
-    console.log(data);
+    const user = authenticate(data.email, data.password);
 
-    await new Promise((resolve) =>
-      setTimeout(resolve, 1500)
-    );
+    if (!user) {
+      alert("Invalid email or password.");
+      return;
+    }
 
     alert("Login Successful");
-
-    navigate("/customer");
+    navigate(getDashboardPath(user.role), { replace: true });
   };
 
   return (

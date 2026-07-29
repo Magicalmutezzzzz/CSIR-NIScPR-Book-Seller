@@ -5,20 +5,27 @@ import {
   X,
   Search,
   ShoppingCart,
+  Heart,
   User,
 } from "lucide-react";
+import { customerDataService } from "../../services/customerDataService";
+import { getAuthenticatedUser, logout } from "../../services/authService";
+import { useNavigate } from "react-router-dom";
 
 const navLinks = [
-  { name: "Home", path: "/" },
-  { name: "Books", path: "/books" },
-  { name: "Journals", path: "/journals" },
-  { name: "Magazines", path: "/magazines" },
-  { name: "Research", path: "/research" },
-  { name: "Publications", path: "/other-publications" },
+  { name: "Home", path: "/customer" },
+  { name: "Books", path: "/customer/books" },
+  { name: "Journals", path: "/customer/journals" },
+  { name: "Magazines", path: "/customer/magazines" },
+  { name: "Research", path: "/customer/research" },
+  { name: "Publications", path: "/customer/other-publications" },
 ];
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const navigate = useNavigate();
+  const cartCount = customerDataService.getCart().reduce((sum, item) => sum + item.quantity, 0);
+  const user = getAuthenticatedUser();
 
   return (
     <header className="sticky top-0 z-50 bg-white shadow-md">
@@ -28,7 +35,7 @@ export default function Navbar() {
         {/* Logo */}
 
         <Link
-          to="/"
+          to="/customer"
           className="flex items-center gap-3"
         >
           <img
@@ -64,7 +71,7 @@ export default function Navbar() {
         <div className="hidden items-center gap-4 lg:flex">
 
           <Link
-            to="/search"
+            to="/customer/search"
             className="rounded-full p-2 transition hover:bg-gray-100"
             title="Search"
           >
@@ -72,25 +79,34 @@ export default function Navbar() {
           </Link>
 
           <Link
-            to="/cart"
+            to="/customer/cart"
             className="relative rounded-full p-2 transition hover:bg-gray-100"
             title="Cart"
           >
             <ShoppingCart size={22} />
 
             <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-600 text-xs font-bold text-white">
-              0
+              {cartCount}
             </span>
 
           </Link>
 
           <Link
-            to="/auth/login"
+            to="/customer/wishlist"
+            className="rounded-full p-2 transition hover:bg-gray-100"
+            title="Wishlist"
+          >
+            <Heart size={22} />
+          </Link>
+
+          <Link
+            to="/customer/profile"
             className="flex items-center gap-2 rounded-xl bg-[#003366] px-5 py-2 font-medium text-white transition hover:bg-[#002855]"
           >
             <User size={18} />
-            Login
+            {user?.email.split("@")[0]}
           </Link>
+          <button onClick={() => { logout(); navigate("/", { replace: true }); }} className="rounded-xl border border-[#003366] px-4 py-2 font-medium text-[#003366]">Logout</button>
 
         </div>
 
@@ -134,7 +150,7 @@ export default function Navbar() {
                     <div className="mt-4 border-t pt-4">
 
               <Link
-                to="/search"
+                to="/customer/search"
                 onClick={() => setMenuOpen(false)}
                 className="flex items-center gap-3 rounded-lg px-3 py-3 text-gray-700 transition hover:bg-gray-100"
               >
@@ -142,24 +158,28 @@ export default function Navbar() {
                 Search
               </Link>
 
+              <Link to="/customer/wishlist" onClick={() => setMenuOpen(false)} className="mt-2 flex items-center gap-3 rounded-lg px-3 py-3 text-gray-700 transition hover:bg-gray-100"><Heart size={20} />Wishlist</Link>
+
               <Link
-                to="/cart"
+                to="/customer/cart"
                 onClick={() => setMenuOpen(false)}
                 className="mt-2 flex items-center gap-3 rounded-lg px-3 py-3 text-gray-700 transition hover:bg-gray-100"
               >
                 <ShoppingCart size={20} />
                 Cart
               </Link>
-
-              <Link
-                to="/auth/login"
-                onClick={() => setMenuOpen(false)}
-                className="mt-4 flex items-center justify-center gap-2 rounded-xl bg-[#003366] px-4 py-3 font-semibold text-white transition hover:bg-[#002855]"
+            <button
+                onClick={() => {
+                  logout();
+                  setMenuOpen(false);
+                  navigate("/", { replace: true });
+                }}
+                className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-[#003366] px-4 py-3 font-semibold text-white transition"
               >
                 <User size={18} />
-                Login
-              </Link>
-
+                Logout
+              </button>
+             
             </div>
 
           </nav>

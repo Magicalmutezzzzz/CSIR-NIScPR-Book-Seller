@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
-import { ShoppingCart, Eye } from "lucide-react";
+import { ShoppingCart, Eye, Heart } from "lucide-react";
+import { customerDataService } from "../../services/customerDataService";
 
 type Props = {
   id: number;
@@ -24,6 +25,7 @@ export default function BookCard({
   stock,
   year,
 }: Props) {
+  const wished = customerDataService.getWishlist().includes(id);
   return (
     <div className="group overflow-hidden rounded-2xl bg-white border border-gray-200 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
       {/* Image */}
@@ -72,7 +74,11 @@ export default function BookCard({
               <Eye size={18} />
             </Link>
 
-            <button className="rounded-lg bg-[#003366] p-2 text-white transition hover:bg-[#002855]">
+            <button onClick={() => { customerDataService.toggleWishlist(id); window.location.reload(); }} aria-label="Toggle wishlist" className={`rounded-lg border p-2 transition ${wished ? "border-red-200 bg-red-50 text-red-600" : "border-gray-300 hover:bg-gray-100"}`}>
+              <Heart size={18} className={wished ? "fill-current" : ""} />
+            </button>
+
+            <button onClick={() => customerDataService.addToCart(id)} aria-label="Add to cart" className="rounded-lg bg-[#003366] p-2 text-white transition hover:bg-[#002855]">
               <ShoppingCart size={18} />
             </button>
           </div>

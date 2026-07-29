@@ -24,13 +24,13 @@ import BookDetails from "../pages/customer/BookDetails";
 import Cart from "../pages/customer/Cart";
 import Checkout from "../pages/customer/Checkout";
 import Profile from "../pages/customer/Profile";
+import Wishlist from "../pages/customer/Wishlist";
 
 // Auth Pages
 import Login from "../pages/auth/Login";
 import Register from "../pages/auth/Register";
 
 // Admin Pages
-import AdminLogin from "../pages/admin/AdminLogin";
 import Dashboard from "../pages/admin/Dashboard";
 import Categories from "../pages/admin/Categories";
 import Publications from "../pages/admin/Publications";
@@ -38,6 +38,7 @@ import Orders from "../pages/admin/Orders";
 import Customers from "../pages/admin/Customers";
 import Users from "../pages/admin/Users";
 import AddPublication from "../pages/admin/AddPublication";
+import AdminEmptyPage from "../pages/admin/AdminEmptyPage";
 
 // Error Page
 import NotFound from "../pages/NotFound";
@@ -55,7 +56,7 @@ const router = createBrowserRouter([
   {
     path: "/customer",
     element: (
-      <ProtectedRoute>
+      <ProtectedRoute requiredRole="customer">
         <CustomerLayout />
       </ProtectedRoute>
     ),
@@ -104,6 +105,7 @@ const router = createBrowserRouter([
         path: "profile",
         element: <Profile />,
       },
+      { path: "wishlist", element: <Wishlist /> },
     ],
   },
 
@@ -128,19 +130,14 @@ const router = createBrowserRouter([
     ],
   },
 
-  // ================= ADMIN LOGIN =================
 
-  {
-    path: "/admin/login",
-    element: <AdminLogin />,
-  },
 
   // ================= ADMIN PANEL =================
 
   {
     path: "/admin",
     element: (
-      <ProtectedRoute>
+      <ProtectedRoute requiredRole="admin">
         <AdminLayout />
       </ProtectedRoute>
     ),
@@ -161,6 +158,11 @@ const router = createBrowserRouter([
         path: "publications/add",
         element: <AddPublication />,
       },
+      { path: "books", element: <Publications typeFilter="Book" /> },
+      { path: "journals", element: <Publications typeFilter="Journal" /> },
+      { path: "magazines", element: <Publications typeFilter="Magazine" /> },
+      { path: "research", element: <Publications typeFilter="Research" /> },
+      { path: "other-publications", element: <Publications typeFilter="Other" /> },
       {
         path: "orders",
         element: <Orders />,
@@ -173,6 +175,9 @@ const router = createBrowserRouter([
         path: "users",
         element: <Users />,
       },
+      { path: "inventory", element: <AdminEmptyPage title="Inventory" description="Stock levels for published catalogue items will be managed here." actionLabel="Manage publications" actionPath="/admin/publications" /> },
+      { path: "reports", element: <AdminEmptyPage title="Reports" description="Sales, catalogue, and customer reports will appear here once real activity is recorded." /> },
+      { path: "settings", element: <AdminEmptyPage title="Settings" description="Configure publication platform settings and integrations here." /> },
     ],
   },
 

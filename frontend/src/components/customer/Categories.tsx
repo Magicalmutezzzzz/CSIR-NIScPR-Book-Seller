@@ -42,7 +42,7 @@ const categories = [
     description: "Government reports and policy documents.",
     icon: FileText,
     color: "bg-cyan-100 text-cyan-700",
-    link: "/customer/research",
+    link: "/customer/other-publications",
   },
   {
     title: "Other Publications",

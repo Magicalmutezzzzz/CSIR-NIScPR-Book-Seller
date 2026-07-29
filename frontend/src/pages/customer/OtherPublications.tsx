@@ -6,7 +6,7 @@ import { publicationService } from "../../services/publicationService";
 export default function OtherPublications() {
   const publications = publicationService
     .getAll()
-    .filter((item) => item.type === "Research");
+    .filter((item) => item.type === "Other");
 
   const [search, setSearch] = useState("");
 
@@ -30,7 +30,7 @@ export default function OtherPublications() {
 
             <div>
               <h1 className="text-5xl font-bold text-white">
-                Research Publications
+                Other Publications
               </h1>
 
               <p className="mt-3 max-w-3xl text-blue-100">
@@ -55,7 +55,7 @@ export default function OtherPublications() {
 
             <input
               type="text"
-              placeholder="Search research publications..."
+              placeholder="Search other publications..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="w-full rounded-xl border py-3 pl-12 pr-4 outline-none focus:border-[#003366]"
@@ -67,7 +67,7 @@ export default function OtherPublications() {
 
         <div className="mt-8 flex items-center justify-between">
           <h2 className="text-3xl font-bold text-[#003366]">
-            Research Collection
+            Other Publications
           </h2>
 
           <div className="rounded-full bg-[#003366] px-5 py-2 font-semibold text-white">

@@ -1,17 +1,19 @@
+import type { ReactNode } from "react";
 import { Navigate } from "react-router-dom";
 
+import { getAuthenticatedUser, getDashboardPath } from "../../services/authService";
+
 interface PublicRouteProps {
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
 export default function PublicRoute({
   children,
 }: PublicRouteProps) {
-  // TODO: Replace with AuthContext later
-  const isAuthenticated = false;
+  const user = getAuthenticatedUser();
 
-  if (isAuthenticated) {
-    return <Navigate to="/" replace />;
+  if (user) {
+    return <Navigate to={getDashboardPath(user.role)} replace />;
   }
 
   return <>{children}</>;

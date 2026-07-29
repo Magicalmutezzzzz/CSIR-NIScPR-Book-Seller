@@ -1,16 +1,19 @@
 import { useState } from "react";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { Menu, X, LogIn, UserPlus } from "lucide-react";
+import { getAuthenticatedUser, getDashboardPath, logout } from "../../services/authService";
 
 export default function PublicNavbar() {
   const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
+  const user = getAuthenticatedUser();
 
   const navItems = [
     { name: "Home", path: "/" },
-    { name: "Publications", path: "/publications" },
-    { name: "Journals", path: "/journals" },
-    { name: "Magazines", path: "/magazines" },
-    { name: "Research", path: "/research" },
+    { name: "Publications", path: "/customer/books" },
+    { name: "Journals", path: "/customer/journals" },
+    { name: "Magazines", path: "/customer/magazines" },
+    { name: "Research", path: "/customer/research" },
   ];
 
   return (
@@ -21,7 +24,7 @@ export default function PublicNavbar() {
 
         <Link to="/" className="flex items-center gap-3">
           <img
-            src="/DefaultHeaderLogo.png"
+            src="/DefaultHeaderLogo.jpg"
             alt="CSIR-NIScPR"
             className="h-14 w-auto"
           />
@@ -51,21 +54,19 @@ export default function PublicNavbar() {
 
         <div className="hidden items-center gap-3 lg:flex">
 
+          {user ? <>
           <Link
-            to="/auth/login"
+            to={getDashboardPath(user.role)}
             className="flex items-center gap-2 rounded-lg border border-[#003366] px-5 py-2 font-medium text-[#003366] transition hover:bg-[#003366] hover:text-white"
           >
             <LogIn size={18} />
-            Login
+            Dashboard
           </Link>
-
-          <Link
-            to="/auth/register"
-            className="flex items-center gap-2 rounded-lg bg-[#003366] px-5 py-2 font-medium text-white transition hover:bg-[#002855]"
-          >
-            <UserPlus size={18} />
-            Sign Up
-          </Link>
+          <button onClick={() => { logout(); navigate("/auth/login"); }} className="rounded-lg bg-[#003366] px-5 py-2 font-medium text-white transition hover:bg-[#002855]">Logout</button>
+          </> : <>
+            <Link to="/auth/login" className="flex items-center gap-2 rounded-lg border border-[#003366] px-5 py-2 font-medium text-[#003366] transition hover:bg-[#003366] hover:text-white"><LogIn size={18} />Login</Link>
+            <Link to="/auth/register" className="flex items-center gap-2 rounded-lg bg-[#003366] px-5 py-2 font-medium text-white transition hover:bg-[#002855]"><UserPlus size={18} />Sign Up</Link>
+          </>}
 
         </div>
 

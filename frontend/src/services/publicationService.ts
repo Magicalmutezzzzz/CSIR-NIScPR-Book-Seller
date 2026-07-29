@@ -1,37 +1,45 @@
-import { publications } from "../data/publication";
-import { Publication } from "../types/publication";
+import { publications as initialPublications } from "../data/publication";
+import type { Publication } from "../types/publication";
+
+const STORAGE_KEY = "nispr-publications";
+
+function getStoredPublications(): Publication[] {
+  const stored = localStorage.getItem(STORAGE_KEY);
+  if (!stored) return initialPublications;
+
+  try {
+    const publications: unknown = JSON.parse(stored);
+    return Array.isArray(publications) ? publications as Publication[] : [];
+  } catch {
+    return [];
+  }
+}
+
+function savePublications(publications: Publication[]): void {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(publications));
+}
+
 export const publicationService = {
-  getAll(): Publication[] {
-    return publications;
+  getAll: getStoredPublications,
+  getBooks: () => getStoredPublications().filter((item) => item.type === "Book"),
+  getJournals: () => getStoredPublications().filter((item) => item.type === "Journal"),
+  getMagazines: () => getStoredPublications().filter((item) => item.type === "Magazine"),
+  getResearch: () => getStoredPublications().filter((item) => item.type === "Research"),
+  getFeatured: () => getStoredPublications().filter((item) => item.featured),
+  getById: (id: number) => getStoredPublications().find((item) => item.id === id),
+  search: (query: string) => getStoredPublications().filter((item) =>
+    item.title.toLowerCase().includes(query.toLowerCase()),
+  ),
+  create: (publication: Omit<Publication, "id" | "images">): Publication => {
+    const createdPublication: Publication = {
+      ...publication,
+      id: Date.now(),
+      images: publication.coverImage ? [publication.coverImage] : [],
+    };
+    savePublications([...getStoredPublications(), createdPublication]);
+    return createdPublication;
   },
-
-  getBooks(): Publication[] {
-    return publications.filter((p) => p.type === "Book");
-  },
-
-  getJournals(): Publication[] {
-    return publications.filter((p) => p.type === "Journal");
-  },
-
-  getMagazines(): Publication[] {
-    return publications.filter((p) => p.type === "Magazine");
-  },
-
-  getResearch(): Publication[] {
-    return publications.filter((p) => p.type === "Research");
-  },
-
-  getFeatured(): Publication[] {
-    return publications.filter((p) => p.featured);
-  },
-
-  getById(id: number): Publication | undefined {
-    return publications.find((p) => p.id === id);
-  },
-
-  search(query: string): Publication[] {
-    return publications.filter((p) =>
-      p.title.toLowerCase().includes(query.toLowerCase())
-    );
+  delete: (id: number): void => {
+    savePublications(getStoredPublications().filter((item) => item.id !== id));
   },
 };

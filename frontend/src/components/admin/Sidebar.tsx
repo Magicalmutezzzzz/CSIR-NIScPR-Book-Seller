@@ -14,7 +14,8 @@ import {
   Settings,
   LogOut,
 } from "lucide-react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import { logout } from "../../services/authService";
 
 const menuItems = [
   { name: "Dashboard", icon: LayoutDashboard, path: "/admin/dashboard" },
@@ -38,13 +39,14 @@ const menuItems = [
 ];
 
 export default function Sidebar() {
+  const navigate = useNavigate();
   return (
     <aside className="w-72 min-h-screen bg-white border-r border-gray-200 flex flex-col">
 
       {/* Logo */}
       <div className="p-6 border-b border-gray-200">
         <img
-          src="/DefaultHeader.png"
+          src="/DefaultHeaderLogo.jpg"
           alt="CSIR-NIScPR"
           className="h-12 mx-auto object-contain"
         />
@@ -80,7 +82,7 @@ export default function Sidebar() {
 
       {/* Logout */}
       <div className="border-t border-gray-200 p-4">
-        <button className="w-full flex items-center justify-center gap-2 bg-red-500 hover:bg-red-600 text-white py-3 rounded-xl transition-all">
+        <button onClick={() => { logout(); navigate("/", { replace: true }); }} className="w-full flex items-center justify-center gap-2 bg-red-500 hover:bg-red-600 text-white py-3 rounded-xl transition-all">
           <LogOut size={18} />
           Logout
         </button>
