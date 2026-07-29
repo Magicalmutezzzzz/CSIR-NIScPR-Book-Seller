@@ -4,6 +4,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.database.init_db import check_database
 from app.routes.auth import router as auth_router
 
+from app.routes.publisher import router as publisher_router
+
 app = FastAPI(
     title="CSIR-NIScPR Publications API",
     version="1.0.0",
@@ -38,3 +40,9 @@ def health():
         "status": "healthy",
         "database": "connected"
     }
+
+app.include_router(
+    publisher_router,
+    prefix="/api/v1/publishers",
+    tags=["Publishers"],
+)

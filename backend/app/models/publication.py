@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from datetime import date
 from decimal import Decimal
-
+from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy import (
     Boolean,
     Date,
@@ -47,6 +47,11 @@ class Publication(BaseModel, Base):
         index=True,
     )
 
+    publisher_id: Mapped[UUID | None] = mapped_column(
+    ForeignKey("publishers.id", ondelete="SET NULL"),
+    nullable=True,
+    index=True,
+    )
     # ---------- Identifiers ----------
 
     isbn: Mapped[str | None] = mapped_column(
@@ -65,6 +70,11 @@ class Publication(BaseModel, Base):
         String(150),
         unique=True,
         nullable=True,
+    )
+    
+    publisher: Mapped["Publisher | None"] = relationship(
+    "Publisher",
+    back_populates="publications",
     )
 
     # ---------- Pricing ----------
@@ -97,10 +107,7 @@ class Publication(BaseModel, Base):
         nullable=True,
     )
 
-    publisher: Mapped[str | None] = mapped_column(
-        String(255),
-        nullable=True,
-    )
+    
 
     pages: Mapped[int | None] = mapped_column(
         Integer,

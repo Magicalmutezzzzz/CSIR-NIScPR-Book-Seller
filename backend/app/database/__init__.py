@@ -1,6 +1,6 @@
 from sqlalchemy import text
 
-from app.database.session import engine
+#from app.database.session import engine
 
 
 def check_database():

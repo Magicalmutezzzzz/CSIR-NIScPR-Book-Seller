@@ -1,36 +1,22 @@
-from decimal import Decimal
+from fastapi import APIRouter, Depends
+from app.core.dependencies import get_current_user
+from app.schemas.auth import LoginRequest, LoginResponse
+from app.services.auth import AuthService
 
-from sqlalchemy import ForeignKey, Integer, Numeric, String
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+router = APIRouter()
 
-from app.database.base import Base
-from app.models.base_model import BaseModel
+@router.post("/login", response_model=LoginResponse)
+def login(data: LoginRequest):
+    token = AuthService.authenticate(data.email, data.password)
+    return LoginResponse(access_token=token)
 
-
-class SubscriptionPlan(BaseModel, Base):
-    __tablename__ = "subscription_plans"
-
-    publication_id: Mapped[str] = mapped_column(
-        ForeignKey("publications.id", ondelete="CASCADE"),
-        nullable=False,
-    )
-
-    duration_months: Mapped[int] = mapped_column(
-        Integer,
-        nullable=False,
-    )
-
-    price: Mapped[Decimal] = mapped_column(
-        Numeric(10, 2),
-        nullable=False,
-    )
-
-    description: Mapped[str | None] = mapped_column(
-        String(255),
-        nullable=True,
-    )
-
-    publication = relationship(
-        "Publication",
-        back_populates="subscription_plans",
-    )
+@router.get("/me")
+def me(
+    current_user=Depends(get_current_user),
+):
+    return {
+        "id": str(current_user.id),
+        "full_name": current_user.full_name,
+        "email": current_user.email,
+        "role": current_user.role.name if current_user.role else None,
+    }

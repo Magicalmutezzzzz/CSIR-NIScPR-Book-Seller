@@ -1,8 +1,13 @@
+from typing import TYPE_CHECKING
+
 from sqlalchemy import String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database.base import Base
 from app.models.base_model import BaseModel
+
+if TYPE_CHECKING:
+    from app.models.publication import Publication
 
 
 class Author(BaseModel, Base):
@@ -50,8 +55,9 @@ class Author(BaseModel, Base):
         String(255),
         nullable=True,
     )
+
     publications: Mapped[list["Publication"]] = relationship(
-    "Publication",
-    secondary="publication_authors",
-    back_populates="authors",
+        "Publication",
+        secondary="publication_authors",
+        back_populates="authors",
     )
