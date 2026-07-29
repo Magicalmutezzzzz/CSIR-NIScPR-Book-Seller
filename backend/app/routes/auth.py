@@ -1,3 +1,4 @@
+from app.core.dependencies import get_current_user
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
@@ -64,3 +65,13 @@ def login(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail=str(e),
         )
+@router.get("/me")
+def me(
+    current_user=Depends(get_current_user),
+):
+    return {
+        "id": str(current_user.id),
+        "full_name": current_user.full_name,
+        "email": current_user.email,
+        "role": current_user.role.name if current_user.role else None,
+    }
