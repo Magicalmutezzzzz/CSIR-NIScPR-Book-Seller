@@ -50,3 +50,8 @@ class Author(BaseModel, Base):
         String(255),
         nullable=True,
     )
+    publications: Mapped[list["Publication"]] = relationship(
+    "Publication",
+    secondary="publication_authors",
+    back_populates="authors",
+    )

@@ -21,6 +21,7 @@ class Category(BaseModel, Base):
     )
 
     publications: Mapped[list["Publication"]] = relationship(
-        "Publication",
-        back_populates="category",
+    "Publication",
+    secondary="publication_categories",
+    back_populates="categories",
     )

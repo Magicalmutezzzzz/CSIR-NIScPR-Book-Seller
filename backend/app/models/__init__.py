@@ -1,3 +1,5 @@
+from app.database.base import Base  # noqa: F401
+
 from app.models.role import Role
 
 from app.models.user import User

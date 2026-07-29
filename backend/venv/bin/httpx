@@ -1,6 +1,0 @@
-#!/Users/karamveersingh/Documents/Data/Coding_Folder/Internship/CSIR-NIScPR/niscpr-publications/backend/venv/bin/python3
-import sys
-from httpx import main
-if __name__ == '__main__':
-    sys.argv[0] = sys.argv[0].removesuffix('.exe')
-    sys.exit(main())

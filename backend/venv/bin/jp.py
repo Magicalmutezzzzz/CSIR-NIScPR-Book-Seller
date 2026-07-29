@@ -1,4 +1,4 @@
-#!/Users/karamveersingh/Documents/Data/Coding_Folder/Internship/CSIR-NIScPR/niscpr-publications/backend/venv/bin/python3
+#!/Users/karamveersingh/Documents/Data/Coding_Folder/Internship/CSIR-NIScPR/niscpr-publications/backend/venv/bin/python3.12
 
 import sys
 import json

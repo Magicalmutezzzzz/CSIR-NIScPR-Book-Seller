@@ -1,0 +1,66 @@
+from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy.orm import Session
+
+from app.database.session import get_db
+from app.schemas.auth import (
+    RegisterRequest,
+    LoginRequest,
+    TokenResponse,
+)
+from app.services.auth_service import AuthService
+
+router = APIRouter(
+    prefix="/auth",
+    tags=["Authentication"],
+)
+
+
+@router.post("/register")
+def register(
+    request: RegisterRequest,
+    db: Session = Depends(get_db),
+):
+    try:
+        service = AuthService(db)
+
+        user = service.register(
+            full_name=request.full_name,
+            email=request.email,
+            password=request.password,
+        )
+
+        return {
+            "message": "Registration successful.",
+            "user_id": str(user.id),
+        }
+
+    except ValueError as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(e),
+        )
+
+
+@router.post(
+    "/login",
+    response_model=TokenResponse,
+)
+def login(
+    request: LoginRequest,
+    db: Session = Depends(get_db),
+):
+    try:
+        token = AuthService(db).login(
+            request.email,
+            request.password,
+        )
+
+        return {
+            "access_token": token,
+        }
+
+    except ValueError as e:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail=str(e),
+        )
