@@ -4,23 +4,10 @@ import {
   Pencil,
   Trash2,
   Package,
-  IndianRupee,
 } from "lucide-react";
 import PublicationStatusBadge from "./PublicationStatusBadge";
-export interface Publication {
-  id: number;
-  image: string;
-  title: string;
-  type: string;
-  category: string;
-  price: number;
-  stock: number;
-  sold: number;
-  revenue: number;
-  status: "Draft" | "Pending Review" | "Published" | "Archived";
-  created: string;
-}
 
+import type { Publication } from "../../../types/publication";
 interface PublicationTableProps {
   publications: Publication[];
 
@@ -31,12 +18,12 @@ interface PublicationTableProps {
   onDelete: (publication: Publication) => void;
 }
 
-const formatCurrency = (value: number) =>
+const formatCurrency = (value: string) =>
   new Intl.NumberFormat("en-IN", {
     style: "currency",
     currency: "INR",
     maximumFractionDigits: 0,
-  }).format(value);
+  }).format(Number(value));
 
 export default function PublicationTable({
   publications,
@@ -44,7 +31,7 @@ export default function PublicationTable({
   onEdit,
   onDelete,
 }: PublicationTableProps) {
-  const [selectedRows, setSelectedRows] = useState<number[]>([]);
+  const [selectedRows, setSelectedRows] = useState<string[]>([]);
 
   const allSelected = useMemo(() => {
     return (
@@ -53,7 +40,7 @@ export default function PublicationTable({
     );
   }, [publications, selectedRows]);
 
-  const toggleRow = (id: number) => {
+  const toggleRow = (id: string) => {
     setSelectedRows((prev) =>
       prev.includes(id)
         ? prev.filter((item) => item !== id)
@@ -142,14 +129,6 @@ export default function PublicationTable({
               </th>
 
               <th className="text-left px-5 py-4 font-semibold">
-                Sold
-              </th>
-
-              <th className="text-left px-5 py-4 font-semibold">
-                Revenue
-              </th>
-
-              <th className="text-left px-5 py-4 font-semibold">
                 Status
               </th>
 
@@ -185,7 +164,7 @@ export default function PublicationTable({
                   <div className="flex items-center gap-4">
 
                     <img
-                      src={publication.image || "placeholder-book.png"}
+                      src={publication.cover_image || "placeholder-book.png"}
                       alt={publication.title}
                       className="w-14 h-20 rounded-lg object-cover border"
                     />
@@ -197,7 +176,7 @@ export default function PublicationTable({
                       </h3>
 
                       <p className="text-sm text-gray-500 mt-1">
-                        Added {publication.created}
+                        Added {publication.publication_date || "-"}
                       </p>
 
                     </div>
@@ -211,12 +190,12 @@ export default function PublicationTable({
                 </td>
 
                 <td className="px-5 py-5">
-                  {publication.category}
+                  {publication.categories?.map(c => c.name).join(", ") || "-"}
                 </td>
 
                 <td className="px-5 py-5 font-semibold">
 
-                  {formatCurrency({publication.price})}
+                  {formatCurrency(publication.price)}
 
                 </td>
                                 
@@ -237,27 +216,9 @@ export default function PublicationTable({
                 </td>
 
                 <td className="px-5 py-5">
-                  {publication.sold}
-                </td>
-
-                <td className="px-5 py-5">
-
-                  <div className="flex items-center gap-1 font-semibold text-green-700">
-
-                    <IndianRupee size={16} />
-
-                    {publication.revenue.toLocaleString("en-IN")}
-
-                  </div>
-
-                </td>
-
-                <td className="px-5 py-5">
-
                   <PublicationStatusBadge
-                    status={publication.status}
+                      status={publication.is_active ? "Published" : "Archived"}
                   />
-
                 </td>
 
                 <td className="px-5 py-5">
@@ -316,7 +277,7 @@ export default function PublicationTable({
             <div className="flex gap-4">
 
               <img
-                src={publication.image}
+                src={publication.cover_image || "/placeholder-book.png"}
                 alt={publication.title}
                 className="w-20 h-28 object-cover rounded-lg border"
               />
@@ -330,7 +291,7 @@ export default function PublicationTable({
                   </h3>
 
                   <PublicationStatusBadge
-                    status={publication.status}
+                    status={publication.is_active ? "Published" : "Archived"}
                   />
 
                 </div>
@@ -340,32 +301,19 @@ export default function PublicationTable({
                 </p>
 
                 <p className="text-sm text-gray-500">
-                  {publication.category}
+                  {publication.categories?.map((c) => c.name).join(", ") || "-"}
                 </p>
 
                 <div className="mt-3 space-y-1 text-sm">
 
                   <p>
                     <strong>Price:</strong>{" "}
-                    {formatCurrency({publication.price})}
+                    {formatCurrency(publication.price)}
                   </p>
 
                   <p>
                     <strong>Stock:</strong>{" "}
                     {publication.stock}
-                  </p>
-
-                  <p>
-                    <strong>Sold:</strong>{" "}
-                    {publication.sold}
-                  </p>
-
-                  <p>
-                    <strong>Revenue:</strong>{" "}
-                    ₹
-                    {publication.revenue.toLocaleString(
-                      "en-IN"
-                    )}
                   </p>
 
                 </div>
