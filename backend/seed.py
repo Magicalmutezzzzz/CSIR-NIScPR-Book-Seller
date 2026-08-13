@@ -1,81 +1,80 @@
-"""Create temporary local accounts for development.
-
-Run from the ``backend`` directory with ``venv/bin/python seed.py``.
-"""
-
-from sqlalchemy import select
-
-from app.core.security import hash_password
 from app.database.session import SessionLocal
+from app.core.security import hash_password
 from app.models.role import Role
 from app.models.user import User
 
+db = SessionLocal()
 
-TEMPORARY_ACCOUNTS = (
-    {
-        "role": "admin",
-        "role_description": "Temporary administrator account",
-        "full_name": "Temporary Admin",
-        "email": "admin@niscpr.local",
-        "password": "Admin@123",
-    },
-    {
-        "role": "customer",
-        "role_description": "Temporary customer account",
-        "full_name": "Temporary Customer",
-        "email": "customer@niscpr.local",
-        "password": "Customer@123",
-    },
-)
+try:
+    # -------------------------
+    # Roles
+    # -------------------------
+    admin_role = db.query(Role).filter(Role.name == "Admin").first()
 
+    if not admin_role:
+        admin_role = Role(name="Admin")
+        db.add(admin_role)
 
-def seed_temporary_accounts() -> None:
-    """Create or reset the development admin and customer accounts."""
-    db = SessionLocal()
-    try:
-        roles: dict[str, Role] = {}
-        for account in TEMPORARY_ACCOUNTS:
-            role_name = account["role"]
-            role = roles.get(role_name)
-            if role is None:
-                role = db.scalar(select(Role).where(Role.name == role_name))
-                if role is None:
-                    role = Role(
-                        name=role_name,
-                        description=account["role_description"],
-                    )
-                    db.add(role)
-                    db.flush()
-                roles[role_name] = role
+    customer_role = db.query(Role).filter(Role.name == "Customer").first()
 
-            user = db.scalar(select(User).where(User.email == account["email"]))
-            if user is None:
-                user = User(
-                    full_name=account["full_name"],
-                    email=account["email"],
-                    password_hash=hash_password(account["password"]),
-                    role_id=role.id,
-                    is_verified=True,
-                    is_active=True,
-                )
-                db.add(user)
-            else:
-                user.full_name = account["full_name"]
-                user.password_hash = hash_password(account["password"])
-                user.role_id = role.id
-                user.is_verified = True
-                user.is_active = True
+    if not customer_role:
+        customer_role = Role(name="Customer")
+        db.add(customer_role)
 
-        db.commit()
-    except Exception:
-        db.rollback()
-        raise
-    finally:
-        db.close()
+    db.commit()
 
+    db.refresh(admin_role)
+    db.refresh(customer_role)
 
-if __name__ == "__main__":
-    seed_temporary_accounts()
-    print("Temporary accounts seeded:")
-    for account in TEMPORARY_ACCOUNTS:
-        print(f"- {account['role']}: {account['email']} / {account['password']}")
+    # -------------------------
+    # Admin User
+    # -------------------------
+    admin = (
+        db.query(User)
+        .filter(User.email == "admin@niscpr.in")
+        .first()
+    )
+
+    if not admin:
+        admin = User(
+            full_name="NIScPR Administrator",
+            email="admin@niscpr.in",
+            password_hash=hash_password("CSIR-Admin@110012"),
+            role_id=admin_role.id,
+        )
+        db.add(admin)
+
+    # -------------------------
+    # Customer User
+    # -------------------------
+    customer = (
+        db.query(User)
+        .filter(User.email == "karamveer340@gmail.com")
+        .first()
+    )
+
+    if not customer:
+        customer = User(
+            full_name="Karamveer Singh",
+            email="karamveer340@gmail.com",
+            password_hash=hash_password("Password@123"),
+            role_id=customer_role.id,
+        )
+        db.add(customer)
+
+    db.commit()
+
+    print("================================")
+    print("Database Seeded Successfully")
+    print("================================")
+    print("Admin:")
+    print("  Email    : admin@niscpr.in")
+    print("  Password : CSIR-Admin@110012")
+    print("")
+    print("Customer:")
+    print("  Email    : karamveer340@gmail.com")
+    print("  Password : Password@123")
+    print("================================")
+
+finally:
+    db.close()

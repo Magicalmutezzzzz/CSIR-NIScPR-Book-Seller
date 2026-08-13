@@ -27,6 +27,8 @@ def verify_password(
 
 def create_access_token(
     subject: str,
+    email: str,
+    role: str,
 ) -> str:
 
     expire = datetime.now(timezone.utc) + timedelta(
@@ -35,6 +37,8 @@ def create_access_token(
 
     payload = {
         "sub": subject,
+        "email": email,
+        "role": role,
         "exp": expire,
     }
 

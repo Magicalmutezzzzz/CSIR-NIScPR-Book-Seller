@@ -1,0 +1,1 @@
+from .publisher_repository import PublisherRepository

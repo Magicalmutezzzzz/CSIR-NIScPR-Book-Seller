@@ -2,8 +2,6 @@ import {
   BookOpen,
   BookText,
   Newspaper,
-  Microscope,
-  FileText,
   Library,
 } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -31,24 +29,10 @@ const categories = [
     link: "/customer/magazines",
   },
   {
-    title: "Research",
-    description: "Research papers and scientific reports.",
-    icon: Microscope,
-    color: "bg-purple-100 text-purple-700",
-    link: "/customer/research",
-  },
-  {
-    title: "Reports",
-    description: "Government reports and policy documents.",
-    icon: FileText,
-    color: "bg-cyan-100 text-cyan-700",
-    link: "/customer/other-publications",
-  },
-  {
     title: "Other Publications",
-    description: "Conference proceedings and publications.",
+    description: "Conference proceedings, reports and other scientific publications.",
     icon: Library,
-    color: "bg-pink-100 text-pink-700",
+    color: "bg-purple-100 text-purple-700",
     link: "/customer/other-publications",
   },
 ];
@@ -72,7 +56,7 @@ export default function Categories() {
 
         </div>
 
-        <div className="mt-14 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-14 grid gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
                     {categories.map((category) => {
             const Icon = category.icon;
 

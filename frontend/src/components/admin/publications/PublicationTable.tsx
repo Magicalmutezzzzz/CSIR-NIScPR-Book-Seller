@@ -207,7 +207,7 @@ export default function PublicationTable({
                 </td>
 
                 <td className="px-5 py-5">
-                  {publication.type}
+                  {publication.publication_type_id}
                 </td>
 
                 <td className="px-5 py-5">
@@ -216,7 +216,7 @@ export default function PublicationTable({
 
                 <td className="px-5 py-5 font-semibold">
 
-                  {formatCurrency(publication.price)}
+                  {formatCurrency({publication.price})}
 
                 </td>
                                 
@@ -336,7 +336,7 @@ export default function PublicationTable({
                 </div>
 
                 <p className="text-sm text-gray-500 mt-2">
-                  {publication.type}
+                  {publication.publication_type_id}
                 </p>
 
                 <p className="text-sm text-gray-500">
@@ -347,7 +347,7 @@ export default function PublicationTable({
 
                   <p>
                     <strong>Price:</strong>{" "}
-                    {formatCurrency(publication.price)}
+                    {formatCurrency({publication.price})}
                   </p>
 
                   <p>

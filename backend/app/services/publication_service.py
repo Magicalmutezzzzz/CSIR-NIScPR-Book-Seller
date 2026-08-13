@@ -1,7 +1,10 @@
 from uuid import UUID
+from decimal import Decimal
 
-from sqlalchemy.orm import Session
+from fastapi import HTTPException, status
+from slugify import slugify
 
+from app.models.publication import Publication
 from app.repositories.publication_repository import PublicationRepository
 from app.schemas.publication import (
     PublicationCreate,
@@ -10,98 +13,205 @@ from app.schemas.publication import (
 
 
 class PublicationService:
-    def __init__(self, db: Session):
-        self.repository = PublicationRepository(db)
 
-    # --------------------------------
-    # Create Publication
-    # --------------------------------
+    def __init__(
+        self,
+        repository: PublicationRepository,
+    ):
+        self.repository = repository
 
     def create_publication(
         self,
-        publication: PublicationCreate,
-    ):
-        return self.repository.create(publication)
+        data: PublicationCreate,
+    ) -> Publication:
 
-    # --------------------------------
-    # Get All Publications
-    # --------------------------------
+        slug = slugify(data.title)
 
-    def get_publications(
+        if self.repository.get_by_slug(slug):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Publication already exists.",
+            )
+
+        if data.isbn:
+            if self.repository.get_by_isbn(data.isbn):
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail="ISBN already exists.",
+                )
+
+        publication = Publication(
+            title=data.title,
+            subtitle=data.subtitle,
+            slug=slug,
+            description=data.description,
+            author=data.author,
+            keywords=data.keywords,
+
+            publication_type_id=data.publication_type_id,
+            publisher_id=data.publisher_id,
+
+            isbn=data.isbn,
+            issn=data.issn,
+            doi=data.doi,
+            sku=data.sku,
+
+            price=data.price,
+            discount_price=data.discount_price,
+            stock=data.stock,
+
+            language=data.language,
+            format=data.format,
+            edition=data.edition,
+            pages=data.pages,
+            publication_date=data.publication_date,
+
+            cover_image=data.cover_image,
+            pdf_preview=data.pdf_preview,
+
+            is_featured=data.is_featured,
+            is_active=data.is_active,
+        )   
+
+        # Attach categories
+        if data.category_ids:
+            categories = self.repository.get_categories_by_ids(
+                data.category_ids
+            )
+
+            if len(categories) != len(data.category_ids):
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail="One or more selected categories were not found.",
+                )
+
+            publication.categories = categories
+
+        return self.repository.create(
+            publication
+        )
+
+    def get_all_publications(
         self,
-        skip: int = 0,
-        limit: int = 20,
-    ):
-        return self.repository.get_all(skip, limit)
+    ) -> list[Publication]:
 
-    # --------------------------------
-    # Get One Publication
-    # --------------------------------
+        return self.repository.get_all()
 
     def get_publication(
         self,
         publication_id: UUID,
-    ):
-        return self.repository.get_by_id(publication_id)
+    ) -> Publication:
 
-    # --------------------------------
-    # Update Publication
-    # --------------------------------
+        publication = self.repository.get_by_id(
+            publication_id
+        )
+
+        if not publication:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Publication not found.",
+            )
+
+        return publication
 
     def update_publication(
         self,
         publication_id: UUID,
-        publication: PublicationUpdate,
-    ):
+        data: PublicationUpdate,
+    ) -> Publication:
 
-        db_publication = self.repository.get_by_id(publication_id)
-
-        if not db_publication:
-            return None
-
-        return self.repository.update(
-            db_publication,
-            publication,
+        publication = self.get_publication(
+            publication_id
         )
 
-    # --------------------------------
-    # Delete Publication
-    # --------------------------------
+        update_data = data.model_dump(
+            exclude_unset=True,
+        )
+
+        if "title" in update_data:
+            update_data["slug"] = slugify(
+                update_data["title"]
+            )
+
+        if "isbn" in update_data:
+            isbn = update_data["isbn"]
+
+            if isbn:
+                existing = self.repository.get_by_isbn(
+                    isbn
+                )
+
+                if (
+                    existing
+                    and existing.id != publication.id
+                ):
+                    raise HTTPException(
+                        status_code=status.HTTP_400_BAD_REQUEST,
+                        detail="ISBN already exists.",
+                    )
+
+        category_ids = update_data.pop(
+            "category_ids",
+            None,
+        )
+
+        for key, value in update_data.items():
+            setattr(
+                publication,
+                key,
+                value,
+            )
+
+        if category_ids is not None:
+
+            categories = self.repository.get_categories_by_ids(
+                category_ids
+            )
+
+            if len(categories) != len(category_ids):
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail="One or more selected categories were not found.",
+                )
+
+            publication.categories = categories
+
+        return self.repository.update(
+            publication
+        )
 
     def delete_publication(
         self,
         publication_id: UUID,
-    ):
+    ) -> None:
 
-        db_publication = self.repository.get_by_id(publication_id)
+        publication = self.get_publication(
+            publication_id
+        )
 
-        if not db_publication:
-            return False
-
-        self.repository.delete(db_publication)
-
-        return True
-
-    # --------------------------------
-    # Featured Publications
-    # --------------------------------
-
-    def featured_publications(self):
-        return self.repository.featured()
-
-    # --------------------------------
-    # Active Publications
-    # --------------------------------
-
-    def active_publications(self):
-        return self.repository.active()
-
-    # --------------------------------
-    # Search Publications
-    # --------------------------------
+        self.repository.delete(
+            publication
+        )
 
     def search_publications(
         self,
-        keyword: str,
+        page: int = 1,
+        limit: int = 12,
+        search: str | None = None,
+        featured: bool | None = None,
+        latest: bool = False,
+        in_stock: bool | None = None,
+        min_price: Decimal | None = None,
+        max_price: Decimal | None = None,
     ):
-        return self.repository.search(keyword)
+
+        return self.repository.search(
+            page=page,
+            limit=limit,
+            search=search,
+            featured=featured,
+            latest=latest,
+            in_stock=in_stock,
+            min_price=min_price,
+            max_price=max_price,
+        )

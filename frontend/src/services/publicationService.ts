@@ -1,45 +1,143 @@
-import { publications as initialPublications } from "../data/publication";
+import {
+  getPublications,
+  getPublication,
+  createPublication,
+  updatePublication,
+  deletePublication,
+} from "../api/publications";
+
+import { getPublicationTypes } from "../api/publicationTypes";
+
 import type { Publication } from "../types/publication";
 
-const STORAGE_KEY = "nispr-publications";
+type PublicationType = {
+  id: string;
+  name: string;
+};
 
-function getStoredPublications(): Publication[] {
-  const stored = localStorage.getItem(STORAGE_KEY);
-  if (!stored) return initialPublications;
+async function getTypeId(
+  name: string
+): Promise<string | undefined> {
+  const types =
+    await getPublicationTypes();
 
-  try {
-    const publications: unknown = JSON.parse(stored);
-    return Array.isArray(publications) ? publications as Publication[] : [];
-  } catch {
-    return [];
-  }
-}
+  const type = (
+    types as PublicationType[]
+  ).find(
+    (item) =>
+      item.name.toLowerCase() ===
+      name.toLowerCase()
+  );
 
-function savePublications(publications: Publication[]): void {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(publications));
+  return type?.id;
 }
 
 export const publicationService = {
-  getAll: getStoredPublications,
-  getBooks: () => getStoredPublications().filter((item) => item.type === "Book"),
-  getJournals: () => getStoredPublications().filter((item) => item.type === "Journal"),
-  getMagazines: () => getStoredPublications().filter((item) => item.type === "Magazine"),
-  getResearch: () => getStoredPublications().filter((item) => item.type === "Research"),
-  getFeatured: () => getStoredPublications().filter((item) => item.featured),
-  getById: (id: number) => getStoredPublications().find((item) => item.id === id),
-  search: (query: string) => getStoredPublications().filter((item) =>
-    item.title.toLowerCase().includes(query.toLowerCase()),
-  ),
-  create: (publication: Omit<Publication, "id" | "images">): Publication => {
-    const createdPublication: Publication = {
-      ...publication,
-      id: Date.now(),
-      images: publication.coverImage ? [publication.coverImage] : [],
-    };
-    savePublications([...getStoredPublications(), createdPublication]);
-    return createdPublication;
+
+  async getAll(): Promise<Publication[]> {
+    return getPublications({
+      limit: 100,
+    });
   },
-  delete: (id: number): void => {
-    savePublications(getStoredPublications().filter((item) => item.id !== id));
+
+  async getById(
+    id: string
+  ): Promise<Publication> {
+    return getPublication(id);
+  },
+
+  async create(
+    data: unknown
+  ): Promise<Publication> {
+    return createPublication(data);
+  },
+
+  async update(
+    id: string,
+    data: unknown
+  ): Promise<Publication> {
+    return updatePublication(id, data);
+  },
+
+  async delete(
+    id: string
+  ): Promise<void> {
+    return deletePublication(id);
+  },
+
+  async getFeatured(): Promise<Publication[]> {
+    return getPublications({
+      featured: true,
+      limit: 100,
+    });
+  },
+
+  async getBooks(): Promise<Publication[]> {
+    const typeId =
+      await getTypeId("Book");
+
+    if (!typeId) {
+      return [];
+    }
+
+    const publications =
+      await getPublications({
+        limit: 100,
+      });
+
+    return publications.filter(
+      (publication) =>
+        publication.publication_type_id ===
+        typeId
+    );
+  },
+
+  async getJournals(): Promise<Publication[]> {
+    const typeId =
+      await getTypeId("Journal");
+
+    if (!typeId) {
+      return [];
+    }
+
+    const publications =
+      await getPublications({
+        limit: 100,
+      });
+
+    return publications.filter(
+      (publication) =>
+        publication.publication_type_id ===
+        typeId
+    );
+  },
+
+  async getMagazines(): Promise<Publication[]> {
+    const typeId =
+      await getTypeId("Magazine");
+
+    if (!typeId) {
+      return [];
+    }
+
+    const publications =
+      await getPublications({
+        limit: 100,
+      });
+
+    return publications.filter(
+      (publication) =>
+        publication.publication_type_id ===
+        typeId
+    );
+  },
+
+  async search(
+    query: string
+  ): Promise<Publication[]> {
+    return getPublications({
+      search: query,
+      limit: 100,
+    });
   },
 };

@@ -25,6 +25,8 @@ import Cart from "../pages/customer/Cart";
 import Checkout from "../pages/customer/Checkout";
 import Profile from "../pages/customer/Profile";
 import Wishlist from "../pages/customer/Wishlist";
+import Addresses from "../pages/customer/Addresses";
+import EditProfile from "../pages/customer/EditProfile";
 
 // Auth Pages
 import Login from "../pages/auth/Login";
@@ -39,6 +41,12 @@ import Customers from "../pages/admin/Customers";
 import Users from "../pages/admin/Users";
 import AddPublication from "../pages/admin/AddPublication";
 import AdminEmptyPage from "../pages/admin/AdminEmptyPage";
+import ChangePassword from "../pages/customer/ChangePassword";
+import DeleteAccount from "../pages/customer/DeleteAccount";
+import MyOrders from "../pages/customer/MyOrders";
+import TrackOrder from "../pages/customer/TrackOrder";
+import Payment from "../pages/customer/Payment";
+import OrderPlaced from "../pages/customer/OrderPlaced";
 
 // Error Page
 import NotFound from "../pages/NotFound";
@@ -56,9 +64,7 @@ const router = createBrowserRouter([
   {
     path: "/customer",
     element: (
-      <ProtectedRoute requiredRole="customer">
         <CustomerLayout />
-      </ProtectedRoute>
     ),
     children: [
       {
@@ -99,13 +105,90 @@ const router = createBrowserRouter([
       },
       {
         path: "checkout",
-        element: <Checkout />,
+        element: (
+          <ProtectedRoute requiredRole="customer">
+            <Checkout />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "profile",
-        element: <Profile />,
+        element: (
+          <ProtectedRoute requiredRole="customer">
+            <Profile />
+          </ProtectedRoute>
+        ),
       },
-      { path: "wishlist", element: <Wishlist /> },
+      {
+        path: "addresses",
+        element: (
+          <ProtectedRoute requiredRole="customer">
+            <Addresses />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "edit-profile",
+        element: (
+          <ProtectedRoute requiredRole="customer">
+            <EditProfile />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "change-password",
+        element: (
+          <ProtectedRoute requiredRole="customer">
+            <ChangePassword />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "delete-account",
+        element: (
+          <ProtectedRoute requiredRole="customer">
+            <DeleteAccount />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "orders",
+        element: (
+          <ProtectedRoute requiredRole="customer">
+            <MyOrders />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "track-order/:orderId",
+        element: (
+          <ProtectedRoute requiredRole="customer">
+            <TrackOrder />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "payment",
+        element: (
+          <ProtectedRoute requiredRole="customer">
+            <Payment />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "order-placed/:orderId",
+        element: (
+          <ProtectedRoute requiredRole="customer">
+            <OrderPlaced />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "wishlist",
+        element: (
+            <Wishlist />
+        ),
+      },
     ],
   },
 

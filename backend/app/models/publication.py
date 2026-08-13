@@ -39,18 +39,37 @@ class Publication(BaseModel, Base):
         nullable=True,
     )
 
+    keywords: Mapped[str | None] = mapped_column(
+        Text,
+        nullable=True,
+    )
+
+    author: Mapped[str | None] = mapped_column(
+        String(300),
+        nullable=True,
+    )
+
+    slug: Mapped[str] = mapped_column(
+        String(350),
+        unique=True,
+        nullable=False,
+        index=True,
+    )
     # ---------- Publication Type ----------
 
-    publication_type_id = mapped_column(
+    publication_type_id: Mapped[UUID] = mapped_column(
         ForeignKey("publication_types.id", ondelete="RESTRICT"),
         nullable=False,
         index=True,
     )
 
     publisher_id: Mapped[UUID | None] = mapped_column(
-    ForeignKey("publishers.id", ondelete="SET NULL"),
-    nullable=True,
-    index=True,
+        ForeignKey(
+            "publishers.id",
+            ondelete="SET NULL",
+        ),
+        nullable=True,
+        index=True,
     )
     # ---------- Identifiers ----------
 
@@ -71,10 +90,16 @@ class Publication(BaseModel, Base):
         unique=True,
         nullable=True,
     )
+
+    sku: Mapped[str | None] = mapped_column(
+        String(100),
+        unique=True,
+        nullable=True,
+    )
     
     publisher: Mapped["Publisher | None"] = relationship(
-    "Publisher",
-    back_populates="publications",
+        "Publisher",
+        back_populates="publications",
     )
 
     # ---------- Pricing ----------
@@ -102,6 +127,11 @@ class Publication(BaseModel, Base):
         nullable=True,
     )
 
+    format: Mapped[str | None] = mapped_column(
+        String(50),
+        nullable=True,
+    )
+
     edition: Mapped[str | None] = mapped_column(
         String(100),
         nullable=True,
@@ -120,6 +150,11 @@ class Publication(BaseModel, Base):
     )
 
     # ---------- Preview ----------
+
+    cover_image: Mapped[str | None] = mapped_column(
+        String(500),
+        nullable=True,
+    )
 
     pdf_preview: Mapped[str | None] = mapped_column(
         String(500),
@@ -159,14 +194,12 @@ class Publication(BaseModel, Base):
         cascade="all, delete-orphan",
     )
 
-    authors: Mapped[list["Author"]] = relationship(
-        "Author",
-        secondary="publication_authors",
-        back_populates="publications",
-    )
-
     categories: Mapped[list["Category"]] = relationship(
         "Category",
         secondary="publication_categories",
         back_populates="publications",
+    )
+    order_items: Mapped[list["OrderItem"]] = relationship(
+        "OrderItem",
+        back_populates="publication",
     )

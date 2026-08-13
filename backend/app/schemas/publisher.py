@@ -1,14 +1,17 @@
 from uuid import UUID
-from datetime import datetime
-from pydantic import BaseModel, ConfigDict, EmailStr, HttpUrl
+
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class PublisherBase(BaseModel):
-    name: str
-    email: EmailStr | None = None
-    website: HttpUrl | None = None
+    name: str = Field(..., min_length=2, max_length=200)
+    description: str | None = None
+    website: str | None = None
+    email: str | None = None
     phone: str | None = None
     address: str | None = None
+    logo_url: str | None = None
+    is_active: bool = True
 
 
 class PublisherCreate(PublisherBase):
@@ -16,16 +19,18 @@ class PublisherCreate(PublisherBase):
 
 
 class PublisherUpdate(BaseModel):
-    name: str | None = None
-    email: EmailStr | None = None
-    website: HttpUrl | None = None
+    name: str | None = Field(default=None, min_length=2, max_length=200)
+    description: str | None = None
+    website: str | None = None
+    email: str | None = None
     phone: str | None = None
     address: str | None = None
+    logo_url: str | None = None
+    is_active: bool | None = None
 
 
 class PublisherResponse(PublisherBase):
     id: UUID
-    created_at: datetime
-    updated_at: datetime
+    slug: str
 
     model_config = ConfigDict(from_attributes=True)

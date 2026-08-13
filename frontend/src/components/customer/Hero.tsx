@@ -49,7 +49,7 @@ export default function Hero() {
               to="/customer/journals"
               className="rounded-xl border border-white px-6 py-4 font-semibold transition hover:bg-white hover:text-[#003366]"
             >
-              Latest Journals
+              Latest Books
             </Link>
 
           </div>
@@ -96,7 +96,7 @@ export default function Hero() {
             />
 
             <h3 className="mt-4 text-4xl font-bold">
-              5000+
+              500+
             </h3>
 
             <p className="mt-2 text-blue-100">
@@ -113,7 +113,7 @@ export default function Hero() {
             />
 
             <h3 className="mt-4 text-4xl font-bold">
-              250+
+              15+
             </h3>
 
             <p className="mt-2 text-blue-100">
@@ -130,11 +130,11 @@ export default function Hero() {
             />
 
             <h3 className="mt-4 text-4xl font-bold">
-              1200+
+              3+
             </h3>
 
             <p className="mt-2 text-blue-100">
-              Research Papers
+              Magazines
             </p>
 
           </div>
@@ -147,15 +147,15 @@ export default function Hero() {
             />
 
             <h3 className="mt-4 text-4xl font-bold">
-              75+
+              100+
             </h3>
 
             <p className="mt-2 text-blue-100">
-              Magazines
+              Other Publications
             </p>
 
           </div>
-                </div>
+        </div>
 
       </div>
 

@@ -1,22 +1,48 @@
-from fastapi import APIRouter, Depends
-from app.core.dependencies import get_current_user
-from app.schemas.auth import LoginRequest, LoginResponse
-from app.services.auth import AuthService
+from __future__ import annotations
 
-router = APIRouter()
+from decimal import Decimal
 
-@router.post("/login", response_model=LoginResponse)
-def login(data: LoginRequest):
-    token = AuthService.authenticate(data.email, data.password)
-    return LoginResponse(access_token=token)
+from sqlalchemy import Boolean, ForeignKey, Integer, Numeric
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-@router.get("/me")
-def me(
-    current_user=Depends(get_current_user),
-):
-    return {
-        "id": str(current_user.id),
-        "full_name": current_user.full_name,
-        "email": current_user.email,
-        "role": current_user.role.name if current_user.role else None,
-    }
+from app.database.base import Base
+from app.models.base_model import BaseModel
+
+
+class SubscriptionPlan(BaseModel, Base):
+    __tablename__ = "subscription_plans"
+
+    publication_id: Mapped[str] = mapped_column(
+        ForeignKey(
+            "publications.id",
+            ondelete="CASCADE",
+        ),
+        nullable=False,
+        index=True,
+    )
+
+    duration_years: Mapped[int] = mapped_column(
+        Integer,
+        nullable=False,
+    )
+
+    price: Mapped[Decimal] = mapped_column(
+        Numeric(10, 2),
+        nullable=False,
+    )
+
+    is_active: Mapped[bool] = mapped_column(
+        Boolean,
+        default=True,
+        nullable=False,
+    )
+
+    publication: Mapped["Publication"] = relationship(
+        "Publication",
+        back_populates="subscription_plans",
+    )
+    order_items: Mapped[list["OrderItem"]] = relationship(
+        "OrderItem",
+        back_populates="subscription_plan",
+    )
+    

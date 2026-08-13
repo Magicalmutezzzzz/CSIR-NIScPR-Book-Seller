@@ -22,7 +22,10 @@ export default function Login() {
   });
 
   const onSubmit = async (data: LoginFormData) => {
-    const user = authenticate(data.email, data.password);
+    const user = await authenticate(
+  data.email,
+  data.password,
+);
 
     if (!user) {
       alert("Invalid email or password.");

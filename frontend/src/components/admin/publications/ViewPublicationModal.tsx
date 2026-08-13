@@ -130,7 +130,7 @@ export default function ViewPublicationModal({
                   </div>
 
                   <p className="text-gray-700">
-                    {publication.type}
+                    {publication.publication_type_id}
                   </p>
 
                 </div>
@@ -146,7 +146,7 @@ export default function ViewPublicationModal({
                   </div>
 
                   <p className="text-2xl font-bold text-green-700">
-                    {formatCurrency(publication.price)}
+                    {formatCurrency({publication.price})}
                   </p>
 
                 </div>
@@ -275,7 +275,7 @@ export default function ViewPublicationModal({
                       </span>
 
                       <span className="font-medium">
-                        {publication.type}
+                        {publication.publication_type_id}
                       </span>
 
                     </div>
@@ -505,7 +505,7 @@ export default function ViewPublicationModal({
                     </p>
 
                     <p className="mt-1 font-semibold">
-                      {publication.type}
+                      {publication.publication_type_id}
                     </p>
 
                   </div>

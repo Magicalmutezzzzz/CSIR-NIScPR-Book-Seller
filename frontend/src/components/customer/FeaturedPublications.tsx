@@ -2,8 +2,21 @@ import { Link } from "react-router-dom";
 import { Eye, ShoppingCart, Star } from "lucide-react";
 import { publicationService } from "../../services/publicationService";
 
+import { useEffect, useState } from "react";
+import type { Publication } from "../../types/publication";
+
 export default function FeaturedPublications() {
-  const publications = publicationService.getFeatured();
+
+  const [publications, setPublications] = useState<Publication[]>([]);
+
+  useEffect(() => {
+    loadFeatured();
+  }, []);
+
+  async function loadFeatured() {
+    const data = await publicationService.getFeatured();
+    setPublications(data);
+  }
 
   return (
     <section className="py-20 bg-white">
@@ -30,7 +43,7 @@ export default function FeaturedPublications() {
               {/* Image */}
               <div className="relative overflow-hidden bg-gray-100">
                 <img
-                  src={publication.coverImage}
+                  src={publication.cover_image || "/DefaultBook.jpg"}
                   alt={publication.title}
                   className="h-80 w-full object-cover transition duration-500 group-hover:scale-105"
                 />
@@ -42,7 +55,7 @@ export default function FeaturedPublications() {
 
                 {/* Category */}
                 <span className="absolute bottom-4 left-4 rounded-full bg-[#003366] px-3 py-1 text-xs font-semibold text-white">
-                  {publication.type}
+                  {publication.publication_type_id}
                 </span>
               </div>
 
@@ -53,7 +66,7 @@ export default function FeaturedPublications() {
                 </h3>
 
                 <p className="mt-2 text-sm text-gray-500">
-                  {publication.author}
+                  {"CSIR-NIScPR"}
                 </p>
 
                 <div className="mt-3 flex items-center gap-1">
@@ -76,7 +89,7 @@ export default function FeaturedPublications() {
 
                 <div className="mt-5 flex items-center justify-between">
                   <span className="text-2xl font-bold text-green-600">
-                    ₹{publication.price}
+                    {publication.price}
                   </span>
 
                   <span className="rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-700">

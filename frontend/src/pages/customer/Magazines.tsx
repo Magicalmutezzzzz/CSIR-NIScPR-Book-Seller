@@ -1,24 +1,60 @@
 import { useMemo, useState } from "react";
 import { BookOpen, Search } from "lucide-react";
+import type { Publication } from "../../types/publication";
 import BookCard from "../../components/customer/BookCard";
 import { publicationService } from "../../services/publicationService";
-
+import GlobalNavbar from "../../components/common/GlobalNavbar";
 export default function Magazines() {
   const magazines = publicationService.getMagazines();
 
   const [search, setSearch] = useState("");
+  const [category, setCategory] = useState("All");
+  const [sortBy, setSortBy] = useState("latest");
+
+  const categories: string[] = [
+    "All",
+    ...Array.from(
+      new Set<string>(magazines.map((item: Publication) => item.category))
+    ),
+  ];
 
   const filteredMagazines = useMemo(() => {
-    return magazines.filter(
-      (item) =>
-        item.title.toLowerCase().includes(search.toLowerCase()) ||
-        item.author.toLowerCase().includes(search.toLowerCase()) ||
-        item.category.toLowerCase().includes(search.toLowerCase())
-    );
-  }, [magazines, search]);
+    let filtered = magazines;
+
+    if (category !== "All") {
+      filtered = filtered.filter((item) => item.category === category);
+    }
+
+    if (search.trim() !== "") {
+      filtered = filtered.filter(
+        (item) =>
+          item.title.toLowerCase().includes(search.toLowerCase()) ||
+          item.author.toLowerCase().includes(search.toLowerCase())
+      );
+    }
+
+    switch (sortBy) {
+      case "name":
+        filtered = filtered.slice().sort((a, b) => a.title.localeCompare(b.title));
+        break;
+      case "priceLow":
+        filtered = filtered.slice().sort((a, b) => a.price - b.price);
+        break;
+      case "priceHigh":
+        filtered = filtered.slice().sort((a, b) => b.price - a.price);
+        break;
+      case "latest":
+      default:
+        filtered = filtered.slice().sort((a, b) => b.year - a.year);
+        break;
+    }
+
+    return filtered;
+  }, [magazines, category, search, sortBy]);
 
   return (
     <div className="min-h-screen bg-slate-50">
+      <GlobalNavbar />
       {/* Hero */}
 
       <section className="bg-[#003366] py-16">
@@ -46,19 +82,38 @@ export default function Magazines() {
 
       <div className="mx-auto max-w-7xl px-6 py-10">
         <div className="rounded-2xl bg-white p-6 shadow">
-          <div className="relative">
-            <Search
-              size={20}
-              className="absolute left-4 top-4 text-gray-400"
-            />
-
-            <input
-              type="text"
-              placeholder="Search magazines..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="w-full rounded-xl border py-3 pl-12 pr-4 outline-none focus:border-[#003366]"
-            />
+          <div className="grid gap-4 md:grid-cols-3">
+            <div className="relative">
+              <Search className="absolute left-4 top-4 text-gray-400" size={20} />
+              <input
+                type="text"
+                placeholder="Search Magzines..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="w-full rounded-xl border py-3 pl-12 pr-4 outline-none focus:border-[#003366]"
+              />
+            </div>
+            <select
+              className="rounded-xl border py-3 px-4 outline-none focus:border-[#003366]"
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+            >
+              {categories.map((cat) => (
+                <option key={cat} value={cat}>
+                  {cat}
+                </option>
+              ))}
+            </select>
+            <select
+              className="rounded-xl border py-3 px-4 outline-none focus:border-[#003366]"
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+            >
+              <option value="latest">Latest</option>
+              <option value="name">A - Z</option>
+              <option value="priceLow">Price : Low to High</option>
+              <option value="priceHigh">Price : High to Low</option>
+            </select>
           </div>
         </div>
 

@@ -1,15 +1,15 @@
-import Navbar from "../../components/customer/Navbar";
+import GlobalNavbar from "../../components/common/GlobalNavbar";
 import DashboardHero from "../../components/customer/DashboardHero";
 import SearchBar from "./SearchBar";
 import Categories from "../../components/customer/Categories";
 import FeaturedPublications from "../../components/customer/FeaturedPublications";
-import LatestJournals from "../../components/customer/LatestJournals";
+import LatestJournals from "../../components/customer/LatestBooks";
 import Footer from "../../components/customer/Footer";
 
 export default function Home() {
   return (
     <div className="min-h-screen bg-slate-50">
-      <Navbar />
+      <GlobalNavbar />
 
       {/* Hero */}
       <DashboardHero />

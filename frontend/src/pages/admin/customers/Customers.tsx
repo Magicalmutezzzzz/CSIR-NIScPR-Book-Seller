@@ -239,7 +239,7 @@ export default function Customers() {
               </p>
 
               <h2 className="mt-2 text-3xl font-bold text-[#003366]">
-                ₹{totalRevenue.toLocaleString("en-IN")}
+                {totalRevenue.toLocaleString("en-IN")}
               </h2>
             </div>
 
@@ -434,7 +434,7 @@ export default function Customers() {
                   {/* Total Spent */}
 
                   <td className="px-6 py-5 text-right font-semibold text-[#003366]">
-                    ₹{customer.totalSpent.toLocaleString("en-IN")}
+                    {customer.totalSpent.toLocaleString("en-IN")}
                   </td>
 
                   {/* Last Order */}

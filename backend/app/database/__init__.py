@@ -1,7 +1,12 @@
 from sqlalchemy import text
 
 #from app.database.session import engine
+import app.models
 
+from app.database.base import Base
+from app.database.session import engine
+
+Base.metadata.create_all(engine)
 
 def check_database():
     try:

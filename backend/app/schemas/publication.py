@@ -5,87 +5,153 @@ from uuid import UUID
 from pydantic import BaseModel, ConfigDict, Field
 
 
-# -----------------------------
-# Base Schema
-# -----------------------------
-
 class PublicationBase(BaseModel):
-    title: str = Field(..., max_length=300)
+    title: str = Field(
+        ...,
+        min_length=2,
+        max_length=300,
+    )
+
     subtitle: str | None = None
+
+    slug: str | None = None
+
     description: str | None = None
+
+    keywords: str | None = None
 
     publication_type_id: UUID
 
+    publisher_id: UUID | None = None
+
     isbn: str | None = None
+
     issn: str | None = None
+
     doi: str | None = None
 
-    price: Decimal
-    discount_price: Decimal | None = None
-    stock: int = 0
+    sku: str | None = None
+
+    price: Decimal = Field(
+        ge=0,
+    )
+
+    discount_price: Decimal | None = Field(
+        default=None,
+        ge=0,
+    )
+
+    stock: int = Field(
+        default=0,
+        ge=0,
+    )
 
     language: str | None = None
-    edition: str | None = None
-    publisher: str | None = None
 
-    pages: int | None = None
+    format: str | None = None
+
+    edition: str | None = None
+
+    pages: int | None = Field(
+        default=None,
+        ge=0,
+    )
+
     publication_date: date | None = None
+
+    cover_image: str | None = None
 
     pdf_preview: str | None = None
 
     is_featured: bool = False
+
     is_active: bool = True
 
 
-# -----------------------------
-# Create
-# -----------------------------
-
 class PublicationCreate(PublicationBase):
-    author_ids: list[UUID] = []
-    category_ids: list[UUID] = []
 
+    author: str | None = None
 
-# -----------------------------
-# Update
-# -----------------------------
+    category_ids: list[UUID] = Field(
+        default_factory=list,
+    )
+
 
 class PublicationUpdate(BaseModel):
+
     title: str | None = None
+
     subtitle: str | None = None
+
+    slug: str | None = None
+
     description: str | None = None
+
+    author: str | None = None
+
+    keywords: str | None = None
 
     publication_type_id: UUID | None = None
 
+    publisher_id: UUID | None = None
+
     isbn: str | None = None
+
     issn: str | None = None
+
     doi: str | None = None
 
-    price: Decimal | None = None
-    discount_price: Decimal | None = None
-    stock: int | None = None
+    sku: str | None = None
+
+    price: Decimal | None = Field(
+        default=None,
+        ge=0,
+    )
+
+    discount_price: Decimal | None = Field(
+        default=None,
+        ge=0,
+    )
+
+    stock: int | None = Field(
+        default=None,
+        ge=0,
+    )
 
     language: str | None = None
-    edition: str | None = None
-    publisher: str | None = None
 
-    pages: int | None = None
+    format: str | None = None
+
+    edition: str | None = None
+
+    pages: int | None = Field(
+        default=None,
+        ge=0,
+    )
+
     publication_date: date | None = None
+
+    cover_image: str | None = None
 
     pdf_preview: str | None = None
 
     is_featured: bool | None = None
+
     is_active: bool | None = None
 
-    author_ids: list[UUID] | None = None
     category_ids: list[UUID] | None = None
 
 
-# -----------------------------
-# Response
-# -----------------------------
-
 class PublicationResponse(PublicationBase):
+
     id: UUID
 
-    model_config = ConfigDict(from_attributes=True)
+    author: str | None = None
+
+    category_ids: list[UUID] = Field(
+        default_factory=list,
+    )
+
+    model_config = ConfigDict(
+        from_attributes=True,
+    )

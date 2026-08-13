@@ -1,9 +1,7 @@
 export interface Category {
-  id: number;
+  id: string;
   name: string;
   description: string;
-  icon: string;
-  image?: string;
-  status: boolean;
-  displayOrder: number;
+  slug: string;
+  is_active: boolean;
 }

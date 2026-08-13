@@ -179,7 +179,7 @@ export default function CustomerDetailsModal({
                       </p>
 
                       <h3 className="text-3xl font-bold text-green-700">
-                        ₹{customer.totalSpent.toLocaleString("en-IN")}
+                        {customer.totalSpent.toLocaleString("en-IN")}
                       </h3>
                     </div>
 
@@ -429,7 +429,7 @@ export default function CustomerDetailsModal({
                   </span>
 
                   <span className="text-xl font-bold text-green-700">
-                    ₹{customer.totalSpent.toLocaleString("en-IN")}
+                    {customer.totalSpent.toLocaleString("en-IN")}
                   </span>
 
                 </div>
@@ -475,7 +475,7 @@ export default function CustomerDetailsModal({
                     <div className="text-right">
 
                       <p className="font-bold text-[#003366]">
-                        ₹{(3500 * item).toLocaleString("en-IN")}
+                        {(3500 * item).toLocaleString("en-IN")}
                       </p>
 
                       <p className="text-sm text-green-600">
@@ -515,7 +515,7 @@ export default function CustomerDetailsModal({
                   </span>
 
                   <span className="font-semibold">
-                    ₹{customer.totalSpent.toLocaleString("en-IN")}
+                    {customer.totalSpent.toLocaleString("en-IN")}
                   </span>
 
                 </div>
@@ -591,7 +591,7 @@ export default function CustomerDetailsModal({
                 </p>
 
                 <h2 className="mt-2 text-3xl font-bold text-green-700">
-                  ₹{customer.totalSpent.toLocaleString("en-IN")}
+                  {customer.totalSpent.toLocaleString("en-IN")}
                 </h2>
 
               </div>

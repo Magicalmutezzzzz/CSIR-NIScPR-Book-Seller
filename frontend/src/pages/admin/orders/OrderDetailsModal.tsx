@@ -134,7 +134,7 @@ export default function OrderDetailsModal({
               </p>
 
               <h3 className="mt-2 text-xl font-bold text-purple-600">
-                ₹{order.total.toLocaleString()}
+                {order.total.toLocaleString()}
               </h3>
 
             </div>
@@ -250,7 +250,7 @@ export default function OrderDetailsModal({
                     Total Purchase :
                     <strong>
                       {" "}
-                      ₹{order.total.toLocaleString()}
+                      {order.total.toLocaleString()}
                     </strong>
                   </span>
 
@@ -511,7 +511,7 @@ export default function OrderDetailsModal({
                       </td>
 
                       <td className="px-4 py-4 text-right">
-                        ₹{item.price.toLocaleString()}
+                        {item.price.toLocaleString()}
                       </td>
 
                       <td className="px-4 py-4 text-right font-semibold text-[#003366]">
@@ -610,7 +610,7 @@ export default function OrderDetailsModal({
                   </span>
 
                   <span className="text-xl font-bold text-[#003366]">
-                    ₹{order.total.toLocaleString()}
+                    {order.total.toLocaleString()}
                   </span>
 
                 </div>

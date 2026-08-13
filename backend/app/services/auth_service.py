@@ -56,5 +56,37 @@ class AuthService:
             raise ValueError("Invalid email or password.")
 
         return create_access_token(
-            str(user.id)
+            subject=str(user.id),
+            email=user.email,
+            role=user.role.name,
+        )
+    def admin_login(
+        self,
+        email: str,
+        password: str,
+    ):
+
+        user = self.repo.get_by_email(email)
+
+        if not user:
+            raise ValueError("Invalid email or password.")
+
+        if not verify_password(
+            password,
+            user.password_hash,
+        ):
+            raise ValueError("Invalid email or password.")
+
+        if (
+            not user.role
+            or user.role.name.lower() != "admin"
+        ):
+            raise ValueError(
+                "You are not authorized as an admin."
+            )
+
+        return create_access_token(
+            subject=str(user.id),
+            email=user.email,
+            role=user.role.name,
         )

@@ -1,38 +1,76 @@
-export type PublicationType =
-  | "Book"
-  | "Journal"
-  | "Magazine"
-  | "Research"
-  | "Other";
+export interface PublicationAuthor {
+  id: string;
+  full_name: string;
+  email?: string | null;
+  affiliation?: string | null;
+  designation?: string | null;
+  biography?: string | null;
+  profile_photo?: string | null;
+  orcid?: string | null;
+  website?: string | null;
+}
 
+export interface PublicationCategory {
+  id: string;
+  name: string;
+  slug: string;
+  description?: string | null;
+  image_url?: string | null;
+  display_order?: number;
+  is_active?: boolean;
+}
 export interface Publication {
-  id: number;
+  id: string;
 
   title: string;
 
-  author: string;
+  subtitle?: string | null;
 
-  description: string;
+  slug: string;
 
-  type: PublicationType;
+  description?: string | null;
 
-  category: string;
+  author?: string | null;
 
-  language: string;
+  keywords?: string | null;
 
-  isbn: string;
+  publication_type_id: string;
 
-  pages: number;
+  publisher_id?: string | null;
 
-  year: number;
+  isbn?: string | null;
 
-  price: number;
+  issn?: string | null;
+
+  doi?: string | null;
+
+  sku?: string | null;
+
+  price: string;
+
+  discount_price?: string | null;
 
   stock: number;
 
-  featured: boolean;
+  language?: string | null;
 
-  coverImage: string;
+  format?: string | null;
 
-  images: string[];
+  edition?: string | null;
+
+  pages?: number | null;
+
+  publication_date?: string | null;
+
+  cover_image?: string | null;
+
+  pdf_preview?: string | null;
+
+  is_featured: boolean;
+
+  is_active: boolean;
+
+  authors?: PublicationAuthor[];
+
+  categories?: PublicationCategory[];
 }

@@ -1,7 +1,7 @@
-from datetime import datetime
+from datetime import date, datetime
 from typing import Optional
 
-from sqlalchemy import Boolean, DateTime, ForeignKey, String
+from sqlalchemy import Boolean, Date, DateTime, ForeignKey, String, Text
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -52,6 +52,52 @@ class User(BaseModel, Base):
         nullable=True,
     )
 
+    gender: Mapped[Optional[str]] = mapped_column(
+        String(20),
+        nullable=True,
+    )
+
+    dob: Mapped[Optional[date]] = mapped_column(
+        Date,
+        nullable=True,
+    )
+
+    organization: Mapped[Optional[str]] = mapped_column(
+        String(200),
+        nullable=True,
+    )
+
+    designation: Mapped[Optional[str]] = mapped_column(
+        String(150),
+        nullable=True,
+    )
+
+    address: Mapped[Optional[str]] = mapped_column(
+        Text,
+        nullable=True,
+    )
+
+    city: Mapped[Optional[str]] = mapped_column(
+        String(100),
+        nullable=True,
+    )
+
+    state: Mapped[Optional[str]] = mapped_column(
+        String(100),
+        nullable=True,
+    )
+
+    country: Mapped[Optional[str]] = mapped_column(
+        String(100),
+        default="India",
+        nullable=True,
+    )
+
+    pincode: Mapped[Optional[str]] = mapped_column(
+        String(10),
+        nullable=True,
+    )
+
     is_verified: Mapped[bool] = mapped_column(
         Boolean,
         default=False,
@@ -72,4 +118,8 @@ class User(BaseModel, Base):
     role: Mapped["Role"] = relationship(
         "Role",
         back_populates="users",
+    )
+    orders: Mapped[list["Order"]] = relationship(
+        "Order",
+        back_populates="user",
     )

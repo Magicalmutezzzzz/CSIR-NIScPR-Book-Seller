@@ -3,7 +3,7 @@ import { ShoppingCart, Eye, Heart } from "lucide-react";
 import { customerDataService } from "../../services/customerDataService";
 
 type Props = {
-  id: number;
+  id: string;
   title: string;
   author: string;
   description?: string;
@@ -63,7 +63,7 @@ export default function BookCard({
 
         <div className="flex items-center justify-between pt-2">
           <span className="text-2xl font-bold text-green-600">
-            ₹{price}
+            {price}
           </span>
 
           <div className="flex gap-2">

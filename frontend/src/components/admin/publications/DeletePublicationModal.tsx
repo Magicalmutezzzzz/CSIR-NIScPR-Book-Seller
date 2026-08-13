@@ -92,7 +92,7 @@ export default function DeletePublicationModal({
 
               <p className="text-gray-600">
                 <strong>Type:</strong>{" "}
-                {publication.type}
+                {publication.publication_type_id}
               </p>
 
               <p className="text-gray-600">

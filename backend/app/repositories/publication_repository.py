@@ -1,144 +1,187 @@
 from uuid import UUID
 
-from sqlalchemy import select
-from sqlalchemy.orm import Session, selectinload
+from decimal import Decimal
+
+from sqlalchemy.orm import Session, joinedload
+
+from sqlalchemy import or_
 
 from app.models.publication import Publication
-from app.schemas.publication import PublicationCreate, PublicationUpdate
 
+from app.models.category import Category
 
 class PublicationRepository:
+
     def __init__(self, db: Session):
         self.db = db
 
-    # -------------------------
-    # Create Publication
-    # -------------------------
-
-    def create(self, publication: PublicationCreate) -> Publication:
-        db_publication = Publication(
-            **publication.model_dump(
-                exclude={"author_ids", "category_ids"}
-            )
-        )
-
-        self.db.add(db_publication)
-        self.db.commit()
-        self.db.refresh(db_publication)
-
-        return db_publication
-
-    # -------------------------
-    # Get All Publications
-    # -------------------------
-
-    def get_all(
+    def create(
         self,
-        skip: int = 0,
-        limit: int = 20,
-    ):
-        stmt = (
-            select(Publication)
+        publication: Publication,
+    ) -> Publication:
+
+        self.db.add(publication)
+        self.db.commit()
+        self.db.refresh(publication)
+
+        return publication
+
+    def get_by_id(
+        self,
+        publication_id: UUID,
+    ) -> Publication | None:
+
+        return (
+            self.db.query(Publication)
             .options(
-                selectinload(Publication.images),
-                selectinload(Publication.publication_type),
-                selectinload(Publication.authors),
-                selectinload(Publication.categories),
+                joinedload(Publication.publication_type),
+                joinedload(Publication.publisher),
+                joinedload(Publication.categories),
             )
-            .offset(skip)
-            .limit(limit)
+            .filter(Publication.id == publication_id)
+            .first()
         )
 
-        return self.db.scalars(stmt).all()
+    def get_by_slug(
+        self,
+        slug: str,
+    ) -> Publication | None:
 
-    # -------------------------
-    # Get Publication By ID
-    # -------------------------
-
-    def get_by_id(self, publication_id: UUID):
-        stmt = (
-            select(Publication)
-            .where(Publication.id == publication_id)
-            .options(
-                selectinload(Publication.images),
-                selectinload(Publication.publication_type),
-                selectinload(Publication.authors),
-                selectinload(Publication.categories),
-            )
+        return (
+            self.db.query(Publication)
+            .filter(Publication.slug == slug)
+            .first()
         )
 
-        return self.db.scalar(stmt)
+    def get_by_isbn(
+        self,
+        isbn: str,
+    ) -> Publication | None:
 
-    # -------------------------
-    # Update Publication
-    # -------------------------
+        return (
+            self.db.query(Publication)
+            .filter(Publication.isbn == isbn)
+            .first()
+        )
+
+    def get_all(self) -> list[Publication]:
+
+        return (
+            self.db.query(Publication)
+            .options(
+                joinedload(Publication.publication_type),
+                joinedload(Publication.publisher),
+                joinedload(Publication.categories),
+            )
+            .order_by(Publication.title)
+            .all()
+        )
 
     def update(
         self,
-        db_publication: Publication,
-        publication: PublicationUpdate,
+        publication: Publication,
     ) -> Publication:
 
-        update_data = publication.model_dump(exclude_unset=True)
-
-        update_data.pop("author_ids", None)
-        update_data.pop("category_ids", None)
-
-        for key, value in update_data.items():
-            setattr(db_publication, key, value)
-
         self.db.commit()
-        self.db.refresh(db_publication)
+        self.db.refresh(publication)
 
-        return db_publication
+        return publication
 
-    # -------------------------
-    # Delete Publication
-    # -------------------------
+    def delete(
+        self,
+        publication: Publication,
+    ) -> None:
 
-    def delete(self, db_publication: Publication):
-
-        self.db.delete(db_publication)
+        self.db.delete(publication)
         self.db.commit()
 
-    # -------------------------
-    # Featured Publications
-    # -------------------------
-
-    def featured(self):
-
-        stmt = (
-            select(Publication)
-            .where(Publication.is_featured.is_(True))
-            .where(Publication.is_active.is_(True))
-        )
-
-        return self.db.scalars(stmt).all()
-
-    # -------------------------
-    # Active Publications
-    # -------------------------
-
-    def active(self):
-
-        stmt = (
-            select(Publication)
-            .where(Publication.is_active.is_(True))
-        )
-
-        return self.db.scalars(stmt).all()
-
-    # -------------------------
-    # Search Publications
-    # -------------------------
-
-    def search(self, keyword: str):
-
-        stmt = (
-            select(Publication)
-            .where(
-                Publication.title.ilike(f"%{keyword}%")
+    def search(
+        self,
+        page: int = 1,
+        limit: int = 12,
+        search: str | None = None,
+        featured: bool |None = None,
+        latest: bool = False,
+        in_stock: bool | None = None,
+        min_price: Decimal | None = None,
+        max_price: Decimal | None = None,
+    ):
+        query = (
+            self.db.query(Publication)
+            .options(
+                joinedload(Publication.publication_type),
+                joinedload(Publication.publisher),
+                joinedload(Publication.categories),
             )
         )
 
-        return self.db.scalars(stmt).all()
+        query = query.filter(
+            Publication.is_active.is_(True)
+        )
+
+        if search:
+            term = f"%{search}%"
+
+            query = query.filter(
+                or_(
+                    Publication.title.ilike(term),
+                    Publication.description.ilike(term),
+                    Publication.keywords.ilike(term),
+                    Publication.author.ilike(term),
+                )
+            )
+
+        if featured is not None:
+            query = query.filter(
+                Publication.is_featured == featured
+            )
+
+        if in_stock is True:
+            query = query.filter(
+                Publication.stock > 0
+            )
+
+        if in_stock is False:
+            query = query.filter(
+                Publication.stock <= 0
+            )
+
+        if min_price is not None:
+            query = query.filter(
+                Publication.price >= min_price
+            )
+
+        if max_price is not None:
+            query = query.filter(
+                Publication.price <= max_price
+            )
+
+        if latest:
+            query = query.order_by(
+                Publication.created_at.desc()
+            )
+        else:
+            query = query.order_by(
+                Publication.title.asc()
+            )
+
+        return (
+            query
+            .offset((page - 1) * limit)
+            .limit(limit)
+            .all()
+        )
+
+    def get_categories_by_ids(
+        self,
+        category_ids: list[UUID],
+    ) -> list[Category]:
+
+        if not category_ids:
+            return []
+
+        return (
+            self.db.query(Category)
+            .filter(Category.id.in_(category_ids))
+            .all()
+        )
