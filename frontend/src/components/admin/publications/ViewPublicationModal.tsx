@@ -9,20 +9,19 @@ import {
   ExternalLink,
 } from "lucide-react";
 import PublicationStatusBadge from "./PublicationStatusBadge";
-import type { Publication } from "./PublicationTable";
-
+import type { Publication } from "../../../types/publication";
 interface ViewPublicationModalProps {
   open: boolean;
   publication: Publication | null;
   onClose: () => void;
 }
 
-const formatCurrency = (value: number) =>
+const formatCurrency = (value: string | number) =>
   new Intl.NumberFormat("en-IN", {
     style: "currency",
     currency: "INR",
     maximumFractionDigits: 0,
-  }).format(value);
+  }).format(Number(value));
 
 export default function ViewPublicationModal({
   open,
@@ -74,7 +73,7 @@ export default function ViewPublicationModal({
             <div className="flex justify-center">
 
               <img
-                src={publication.image}
+                src={(publication.cover_image || "N/A")}
                 alt={publication.title}
                 className="w-72 rounded-2xl border object-cover shadow-lg"
                 onError={(e) => {
@@ -95,9 +94,15 @@ export default function ViewPublicationModal({
                   {publication.title}
                 </h1>
 
-                <PublicationStatusBadge
-                  status={publication.status}
-                />
+                <span
+                  className={`px-3 py-1 rounded-full text-sm ${
+                    publication.is_active
+                      ? "bg-green-100 text-green-700"
+                      : "bg-red-100 text-red-700"
+                  }`}
+                >
+                  {publication.is_active ? "Active" : "Inactive"}
+                </span>
 
               </div>
 
@@ -114,7 +119,7 @@ export default function ViewPublicationModal({
                   </div>
 
                   <p className="text-gray-700">
-                    {publication.category}
+                    {publication.categories?.map(c => c.name).join(", ") || "-"}
                   </p>
 
                 </div>
@@ -146,7 +151,7 @@ export default function ViewPublicationModal({
                   </div>
 
                   <p className="text-2xl font-bold text-green-700">
-                    {formatCurrency({publication.price})}
+                    {formatCurrency(publication.price)}
                   </p>
 
                 </div>
@@ -178,7 +183,7 @@ export default function ViewPublicationModal({
                   </div>
 
                   <p className="text-2xl font-bold">
-                    {publication.sold}
+                    {0}
                   </p>
 
                 </div>
@@ -194,7 +199,7 @@ export default function ViewPublicationModal({
                   </div>
 
                   <p className="text-2xl font-bold text-green-700">
-                    {formatCurrency(publication.revenue)}
+                    {"-"}
                   </p>
 
                 </div>
@@ -212,7 +217,7 @@ export default function ViewPublicationModal({
                 </div>
 
                 <p className="text-gray-700">
-                  {publication.created}
+                  {publication.publication_date || "-"}
                 </p>
 
               </div>
@@ -263,7 +268,7 @@ export default function ViewPublicationModal({
                       </span>
 
                       <span className="font-medium">
-                        {publication.category}
+                        {publication.categories?.map((c) => c.name).join(", ") || "-"}
                       </span>
 
                     </div>
@@ -287,7 +292,7 @@ export default function ViewPublicationModal({
                       </span>
 
                       <PublicationStatusBadge
-                        status={publication.status}
+                        status={publication.is_active ? "Published" : "Draft"}
                       />
 
                     </div>
@@ -323,7 +328,7 @@ export default function ViewPublicationModal({
                       </span>
 
                       <span className="font-semibold">
-                        {publication.sold}
+                        {0}
                       </span>
 
                     </div>
@@ -335,7 +340,7 @@ export default function ViewPublicationModal({
                       </span>
 
                       <span className="font-semibold text-green-700">
-                        {formatCurrency(publication.revenue)}
+                        {"-"}
                       </span>
 
                     </div>
@@ -369,7 +374,7 @@ export default function ViewPublicationModal({
 
                     <img
                       key={item}
-                      src={publication.image}
+                      src={publication.cover_image || "https://placehold.co/300x420?text=No+Image"}
                       alt={`Gallery ${item}`}
                       className="aspect-[3/4] rounded-xl border object-cover"
                     />
@@ -477,7 +482,7 @@ export default function ViewPublicationModal({
                     </p>
 
                     <p className="mt-1 font-semibold">
-                      {publication.created}
+                      {publication.publication_date || "-"}
                     </p>
 
                   </div>
@@ -491,7 +496,7 @@ export default function ViewPublicationModal({
                     <div className="mt-2">
 
                       <PublicationStatusBadge
-                        status={publication.status}
+                        status={publication.is_active ? "Published" : "Draft"}
                       />
 
                     </div>
