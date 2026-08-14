@@ -3,18 +3,18 @@ import { X, Save, Upload } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import type { Publication } from "./PublicationTable";
+import type { Publication } from "../../../types/publication";
 
 const publicationSchema = z.object({
-  id: z.number(),
-
-  image: z.string(),
+ id: z.string(),
 
   title: z
     .string()
     .min(3, "Title must be at least 3 characters"),
 
   type: z.string(),
+
+  image: z.string(),
 
   category: z.string(),
 
@@ -77,18 +77,48 @@ export default function EditPublicationModal({
   });
 
   useEffect(() => {
-    if (publication) {
-      reset(publication);
-    }
-  }, [publication, reset]);
+      if (!publication) return;
+        reset({
+          id: publication.id,
+          image: publication.cover_image ?? "",
+          title: publication.title,
 
-  if (!open || !publication) return null;
+          type:
+              publication.types?.[0]?.name ?? "",
 
-  const submitForm = (
-    data: PublicationFormData
-  ) => {
-    onSave(data);
-  };
+          category:
+              publication.categories
+                  ?.map((c) => c.name)
+                  .join(", ") ?? "",
+
+          price: publication.price,
+
+          stock: publication.stock,
+
+          sold: publication.sold ?? 0,
+
+          revenue: publication.revenue ?? 0,
+
+          status:
+              (publication.status?.[0]?.name as
+                  | "Draft"
+                  | "Pending Review"
+                  | "Published"
+                  | "Archived") ??
+              "Draft",
+
+          created:
+              publication.created ??
+              publication.publication_date ??
+              "",
+      });
+        }, [publication, reset]);
+
+    if (!open || !publication) return null;
+
+    const submitForm = (data: PublicationFormData) => {
+      onSave(data);
+    };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-5">
@@ -339,7 +369,7 @@ export default function EditPublicationModal({
               <div className="flex justify-center">
 
                 <img
-                  src={publication.image}
+                  src={publication.cover_image || "https://placehold.co/300x420?text=No+Image"}
                   alt={publication.title}
                   className="w-64 rounded-2xl border shadow-lg object-cover"
                   onError={(e) => {
@@ -395,7 +425,7 @@ export default function EditPublicationModal({
                 >
 
                   <img
-                    src={publication.image}
+                    src={publication.cover_image || "https://placehold.co/300x420?text=No+Image"}
                     alt={`Gallery ${item}`}
                     className="aspect-[3/4] w-full object-cover"
                   />

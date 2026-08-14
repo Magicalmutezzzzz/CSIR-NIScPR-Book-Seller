@@ -1,5 +1,5 @@
 import { Trash2, X, AlertTriangle } from "lucide-react";
-import type { Publication } from "./PublicationTable";
+import type { Publication } from "../../../types/publication";
 
 interface DeletePublicationModalProps {
   open: boolean;
@@ -70,7 +70,7 @@ export default function DeletePublicationModal({
           <div className="flex gap-4">
 
             <img
-              src={publication.image}
+              src={publication.cover_image || "https://placehold.co/80x120?text=Book"}
               alt={publication.title}
               className="h-28 w-20 rounded-lg border object-cover"
               onError={(e) => {
@@ -87,7 +87,7 @@ export default function DeletePublicationModal({
 
               <p className="mt-2 text-gray-600">
                 <strong>Category:</strong>{" "}
-                {publication.category}
+                {publication.categories?.map((c) => c.name).join(", ") || "-"}
               </p>
 
               <p className="text-gray-600">
@@ -97,7 +97,7 @@ export default function DeletePublicationModal({
 
               <p className="text-gray-600">
                 <strong>Status:</strong>{" "}
-                {publication.status}
+                {publication.is_active ? "Published" : "Draft"}
               </p>
 
             </div>

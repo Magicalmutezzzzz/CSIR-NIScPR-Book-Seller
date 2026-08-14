@@ -46,9 +46,9 @@ export interface Publication {
 
   sku?: string | null;
 
-  price: string;
+  price: number;
 
-  discount_price?: string | null;
+  discount_price?: number | null;
 
   stock: number;
 
@@ -73,4 +73,16 @@ export interface Publication {
   authors?: PublicationAuthor[];
 
   categories?: PublicationCategory[];
+
+  types?: { id: string; name: string }[];
+
+  status?: { id: string; name: string }[];
+
+  revenue: number;
+
+  updated_at: string; 
+
+  created: string;
+
+  sold: number;
 }
