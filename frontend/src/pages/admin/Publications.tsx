@@ -1,14 +1,12 @@
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
-
 import { publicationService } from "../../services/publicationService";
 import type {
   Publication,
-  PublicationType,
 } from "../../types/publication";
 
 interface PublicationsProps {
-  typeFilter?: PublicationType;
+  typeFilter?: string;
 }
 
 export default function Publications({
@@ -31,8 +29,8 @@ export default function Publications({
       if (typeFilter) {
         setPublications(
           data.filter(
-            (item: Publication) =>
-              item.type === typeFilter
+            (item) =>
+              item.publication_type?.name === typeFilter
           )
         );
       } else {
@@ -138,11 +136,11 @@ export default function Publications({
                   </td>
 
                   <td className="px-6 py-4">
-                    {item.type}
+                    {item.publication_type?.name ?? "-"}
                   </td>
 
                   <td className="px-6 py-4">
-                    {item.category}
+                    {item.categories?.map((c) => c.name).join(", ") ?? "-"}
                   </td>
 
                   <td className="px-6 py-4">

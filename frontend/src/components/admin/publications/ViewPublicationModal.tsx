@@ -135,7 +135,7 @@ export default function ViewPublicationModal({
                   </div>
 
                   <p className="text-gray-700">
-                    {publication.publication_type_id}
+                    {publication.publication_type?.name || "-"}
                   </p>
 
                 </div>
@@ -183,7 +183,7 @@ export default function ViewPublicationModal({
                   </div>
 
                   <p className="text-2xl font-bold">
-                    {0}
+                    {publication.sold}
                   </p>
 
                 </div>
@@ -197,9 +197,9 @@ export default function ViewPublicationModal({
                     Revenue
 
                   </div>
-
+                  {0}
                   <p className="text-2xl font-bold text-green-700">
-                    {"-"}
+                    
                   </p>
 
                 </div>
@@ -230,9 +230,7 @@ export default function ViewPublicationModal({
                 </h3>
 
                 <p className="leading-7 text-gray-700">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Replace this with the publication description from your
-                  backend once FastAPI integration is complete.
+                  {publication.description || "-"}
                 </p>
 
               </div>
@@ -280,7 +278,7 @@ export default function ViewPublicationModal({
                       </span>
 
                       <span className="font-medium">
-                        {publication.publication_type_id}
+                        {publication.publication_type?.name || "-"}
                       </span>
 
                     </div>
@@ -292,7 +290,13 @@ export default function ViewPublicationModal({
                       </span>
 
                       <PublicationStatusBadge
-                        status={publication.is_active ? "Published" : "Draft"}
+                        status={
+                          (publication.status?.name ?? "Draft") as
+                            | "Draft"
+                            | "Pending Review"
+                            | "Published"
+                            | "Archived"
+                        }
                       />
 
                     </div>
@@ -328,7 +332,7 @@ export default function ViewPublicationModal({
                       </span>
 
                       <span className="font-semibold">
-                        {0}
+                        {publication.sold}
                       </span>
 
                     </div>
@@ -340,7 +344,7 @@ export default function ViewPublicationModal({
                       </span>
 
                       <span className="font-semibold text-green-700">
-                        {"-"}
+                        {0}
                       </span>
 
                     </div>
@@ -482,7 +486,7 @@ export default function ViewPublicationModal({
                     </p>
 
                     <p className="mt-1 font-semibold">
-                      {publication.publication_date || "-"}
+                      {publication.publication_date ?? publication.created}
                     </p>
 
                   </div>
@@ -510,7 +514,7 @@ export default function ViewPublicationModal({
                     </p>
 
                     <p className="mt-1 font-semibold">
-                      {publication.publication_type_id}
+                      {publication.publication_type?.name || "-"}
                     </p>
 
                   </div>

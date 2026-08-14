@@ -18,12 +18,12 @@ interface PublicationTableProps {
   onDelete: (publication: Publication) => void;
 }
 
-const formatCurrency = (value: string) =>
+const formatCurrency = (value: number) =>
   new Intl.NumberFormat("en-IN", {
     style: "currency",
     currency: "INR",
     maximumFractionDigits: 0,
-  }).format(Number(value));
+  }).format(value);
 
 export default function PublicationTable({
   publications,
@@ -186,7 +186,7 @@ export default function PublicationTable({
                 </td>
 
                 <td className="px-5 py-5">
-                  {publication.publication_type_id}
+                  {publication.publication_type?.name || "-"}
                 </td>
 
                 <td className="px-5 py-5">
@@ -217,7 +217,13 @@ export default function PublicationTable({
 
                 <td className="px-5 py-5">
                   <PublicationStatusBadge
-                      status={publication.is_active ? "Published" : "Archived"}
+                    status={
+                      (publication.status?.name ?? "Draft") as
+                        | "Draft"
+                        | "Pending Review"
+                        | "Published"
+                        | "Archived"
+                    }
                   />
                 </td>
 
@@ -297,7 +303,7 @@ export default function PublicationTable({
                 </div>
 
                 <p className="text-sm text-gray-500 mt-2">
-                  {publication.publication_type_id}
+                  {publication.publication_type?.name || "-"}
                 </p>
 
                 <p className="text-sm text-gray-500">

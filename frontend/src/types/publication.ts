@@ -1,88 +1,95 @@
-export interface PublicationAuthor {
+export interface PublicationType {
   id: string;
-  full_name: string;
-  email?: string | null;
-  affiliation?: string | null;
-  designation?: string | null;
-  biography?: string | null;
-  profile_photo?: string | null;
-  orcid?: string | null;
-  website?: string | null;
+ name: string;
+}
+
+export interface PublicationStatus {
+  id: string;
+ name: "Draft" | "Pending Review" | "Published" | "Archived";
 }
 
 export interface PublicationCategory {
   id: string;
-  name: string;
-  slug: string;
-  description?: string | null;
-  image_url?: string | null;
-  display_order?: number;
-  is_active?: boolean;
+ name: string;
+ slug: string;
 }
+
 export interface Publication {
+
   id: string;
 
   title: string;
 
-  subtitle?: string | null;
+  subtitle?: string;
 
   slug: string;
 
-  description?: string | null;
+  description?: string;
 
-  author?: string | null;
+  author?: string;
 
-  keywords?: string | null;
+  keywords?: string;
+
+  publication_type?: {
+    id: string;
+    name: string;
+  };
+
+  categories?: {
+    id: string;
+    name: string;
+    slug: string;
+  }[];
 
   publication_type_id: string;
 
-  publisher_id?: string | null;
+  category_ids?: string[];
 
-  isbn?: string | null;
+  publisher_id?: string;
 
-  issn?: string | null;
+  isbn?: string;
 
-  doi?: string | null;
+  issn?: string;
 
-  sku?: string | null;
+  doi?: string;
+
+  sku?: string;
 
   price: number;
 
-  discount_price?: number | null;
+  discount_price?: number;
 
   stock: number;
 
-  language?: string | null;
+  language?: string;
 
-  format?: string | null;
+  format?: string;
 
-  edition?: string | null;
+  edition?: string;
 
-  pages?: number | null;
+  pages?: number;
 
-  publication_date?: string | null;
+  publication_date?: string;
 
-  cover_image?: string | null;
+  cover_image?: string;
 
-  pdf_preview?: string | null;
+  pdf_preview?: string;
 
   is_featured: boolean;
 
   is_active: boolean;
 
-  authors?: PublicationAuthor[];
+  sold?: number;
 
-  categories?: PublicationCategory[];
+  revenue?: number;
 
-  types?: { id: string; name: string }[];
+  created?: string;
 
-  status?: { id: string; name: string }[];
+  updated_at?: string;
 
-  revenue: number;
+  status?: {
+    id: string;
+    name: "Draft" | "Pending Review" | "Published" | "Archived";
+  };
 
-  updated_at: string; 
-
-  created: string;
-
-  sold: number;
 }

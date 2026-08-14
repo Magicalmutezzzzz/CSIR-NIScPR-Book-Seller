@@ -84,7 +84,7 @@ export default function EditPublicationModal({
           title: publication.title,
 
           type:
-              publication.types?.[0]?.name ?? "",
+            publication.publication_type?.name ?? "",
 
           category:
               publication.categories
@@ -100,7 +100,7 @@ export default function EditPublicationModal({
           revenue: publication.revenue ?? 0,
 
           status:
-              (publication.status?.[0]?.name as
+              (publication.status?.name as
                   | "Draft"
                   | "Pending Review"
                   | "Published"

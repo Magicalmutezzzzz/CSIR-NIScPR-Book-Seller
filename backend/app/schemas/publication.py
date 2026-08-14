@@ -4,7 +4,19 @@ from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field
 
+class PublicationTypeResponse(BaseModel):
+    id: UUID
+    name: str
 
+    model_config = ConfigDict(from_attributes=True)
+
+
+class CategoryResponse(BaseModel):
+    id: UUID
+    name: str
+    slug: str
+
+    model_config = ConfigDict(from_attributes=True)
 class PublicationBase(BaseModel):
     title: str = Field(
         ...,
@@ -143,14 +155,15 @@ class PublicationUpdate(BaseModel):
 
 
 class PublicationResponse(PublicationBase):
-
     id: UUID
 
     author: str | None = None
 
-    category_ids: list[UUID] = Field(
-        default_factory=list,
-    )
+    category_ids: list[UUID] = Field(default_factory=list)
+
+    publication_type: PublicationTypeResponse | None = None
+
+    categories: list[CategoryResponse] = Field(default_factory=list)
 
     model_config = ConfigDict(
         from_attributes=True,
