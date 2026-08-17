@@ -5,28 +5,30 @@ import {
   BookOpen,
   Eye,
 } from "lucide-react";
-import { publicationService } from "../../services/publicationService";
-
 import { useEffect, useState } from "react";
+
+import { publicationService } from "../../services/publicationService";
 import type { Publication } from "../../types/publication";
 
 export default function LatestBooks() {
-
   const [books, setBooks] = useState<Publication[]>([]);
+
+  async function loadBooks() {
+    try {
+      const data = await publicationService.getBooks();
+      setBooks(data);
+    } catch (error) {
+      console.error("Failed to load books:", error);
+    }
+  }
 
   useEffect(() => {
     loadBooks();
   }, []);
 
-  async function loadBooks() {
-    const data = await publicationService.getBooks();
-    setBooks(data);
-  }
-
   return (
     <section className="bg-slate-50 py-20">
       <div className="mx-auto max-w-7xl px-6">
-
         {/* Header */}
         <div className="flex flex-col items-start justify-between gap-6 md:flex-row md:items-center">
           <div>
@@ -49,84 +51,84 @@ export default function LatestBooks() {
 
         {/* Book Cards */}
         <div className="mt-14 grid gap-8 md:grid-cols-2 xl:grid-cols-3">
+          {books.map((book) => {
+            const year = book.publication_date
+              ? new Date(book.publication_date).getFullYear()
+              : "";
 
-          {books.map((book) => (
+            const category =
+              book.categories?.[0]?.name ?? "General";
 
-            <div
-              key={book.id}
-              className="group overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl"
-            >
+            return (
+              <div
+                key={book.id}
+                className="group overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl"
+              >
+                {/* Image */}
+                <div className="relative overflow-hidden bg-gray-100">
+                  <img
+                    src={book.cover_image || "/DefaultBook.jpg"}
+                    alt={book.title}
+                    className="h-80 w-full object-cover transition duration-500 group-hover:scale-105"
+                  />
 
-              {/* Image */}
-              <div className="relative overflow-hidden bg-gray-100">
+                  <span className="absolute left-4 top-4 rounded-full bg-blue-100 px-3 py-1 text-xs font-bold text-blue-700">
+                    Book
+                  </span>
 
-                <img
-                  src={book.cover_image || "/DefaultBook.jpg"}
-                  alt={book.title}
-                  className="h-80 w-full object-cover transition duration-500 group-hover:scale-105"
-                />
+                  {year && (
+                    <span className="absolute right-4 top-4 rounded-full bg-[#003366] px-3 py-1 text-xs font-bold text-white">
+                      {year}
+                    </span>
+                  )}
+                </div>
 
-                <span className="absolute left-4 top-4 rounded-full bg-blue-100 px-3 py-1 text-xs font-bold text-blue-700">
-                  Book
-                </span>
+                {/* Body */}
+                <div className="p-6">
+                  <h3 className="line-clamp-2 text-xl font-bold text-[#003366]">
+                    {book.title}
+                  </h3>
 
-                <span className="absolute right-4 top-4 rounded-full bg-[#003366] px-3 py-1 text-xs font-bold text-white">
-                  {book.year}
-                </span>
+                  <p className="mt-2 text-gray-500">
+                    {book.author || "Unknown Author"}
+                  </p>
 
-              </div>
+                  <div className="mt-5 space-y-3">
+                    <div className="flex items-center gap-2 text-gray-600">
+                      <BookOpen size={18} />
+                      <span>{category}</span>
+                    </div>
 
-              {/* Body */}
-              <div className="p-6">
-
-                <h3 className="line-clamp-2 text-xl font-bold text-[#003366]">
-                  {book.title}
-                </h3>
-
-                <p className="mt-2 text-gray-500">
-                  {book.author}
-                </p>
-
-                <div className="mt-5 space-y-3">
-
-                  <div className="flex items-center gap-2 text-gray-600">
-                    <BookOpen size={18} />
-                    <span>{book.category}</span>
+                    <div className="flex items-center gap-2 text-gray-600">
+                      <CalendarDays size={18} />
+                      <span>{year || "N/A"}</span>
+                    </div>
                   </div>
 
-                  <div className="flex items-center gap-2 text-gray-600">
-                    <CalendarDays size={18} />
-                    <span>{book.year}</span>
+                  <div className="mt-6 line-clamp-3 text-sm text-gray-600">
+                    {book.description || "No description available."}
                   </div>
 
+                  <div className="mt-8 flex gap-3">
+                    <Link
+                      to={`/customer/book/${book.id}`}
+                      className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-[#003366] py-3 font-semibold text-[#003366] transition hover:bg-[#003366] hover:text-white"
+                    >
+                      <Eye size={18} />
+                      View Details
+                    </Link>
+
+                    <button
+                      className="flex items-center gap-2 rounded-xl bg-[#003366] px-5 text-white transition hover:bg-[#002855]"
+                      type="button"
+                    >
+                      <Download size={18} />
+                    </button>
+                  </div>
                 </div>
-
-                <div className="mt-6 line-clamp-3 text-sm text-gray-600">
-                  {book.description}
-                </div>
-
-                <div className="mt-8 flex gap-3">
-
-                  <Link
-                    to={`/customer/books/${book.id}`}
-                    className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-[#003366] py-3 font-semibold text-[#003366] transition hover:bg-[#003366] hover:text-white"
-                  >
-                    <Eye size={18} />
-                    View Details
-                  </Link>
-
-                  <button className="flex items-center gap-2 rounded-xl bg-[#003366] px-5 text-white transition hover:bg-[#002855]">
-                    <Download size={18} />
-                  </button>
-
-                </div>
-
               </div>
-
-            </div>
-
-          ))}
-
+            );
+          })}
         </div>
       </div>
     </section>
