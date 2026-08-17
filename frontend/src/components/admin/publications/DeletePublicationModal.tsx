@@ -97,7 +97,7 @@ export default function DeletePublicationModal({
 
               <p className="text-gray-600">
                 <strong>Status:</strong>{" "}
-                {publication.status?.name || "Draft"}
+                {publication.is_active ? "Published" : "Draft"}
               </p>
 
             </div>

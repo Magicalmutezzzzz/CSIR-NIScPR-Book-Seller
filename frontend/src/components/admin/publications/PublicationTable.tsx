@@ -217,13 +217,11 @@ export default function PublicationTable({
 
                 <td className="px-5 py-5">
                   <PublicationStatusBadge
-                    status={
-                      (publication.status?.name ?? "Draft") as
-                        | "Draft"
-                        | "Pending Review"
-                        | "Published"
-                        | "Archived"
-                    }
+                      status={
+                          publication.is_active
+                              ? "Published"
+                              : "Archived"
+                      }
                   />
                 </td>
 
@@ -297,8 +295,12 @@ export default function PublicationTable({
                   </h3>
 
                   <PublicationStatusBadge
-                    status={publication.is_active ? "Published" : "Archived"}
-                  />
+                    status={
+                        publication.is_active
+                            ? "Published"
+                            : "Archived"
+                    }
+                />
 
                 </div>
 

@@ -257,17 +257,6 @@ export default function BookDetails() {
         ).getFullYear()
       : "N/A";
 
-  const authorNames =
-    publication.authors &&
-    publication.authors.length > 0
-      ? publication.authors
-          .map(
-            (author) =>
-              author.full_name
-          )
-          .join(", ")
-      : "N/A";
-
   const categoryNames =
     publication.categories &&
     publication.categories.length > 0
@@ -280,8 +269,6 @@ export default function BookDetails() {
       : "N/A";
 
   const hasAdditionalInformation =
-    (publication.authors &&
-      publication.authors.length > 0) ||
     (publication.categories &&
       publication.categories.length > 0) ||
     Boolean(publication.edition) ||
@@ -356,8 +343,7 @@ export default function BookDetails() {
                 ================================================= */}
 
             <span className="inline-flex rounded-full bg-blue-100 px-4 py-2 text-sm font-semibold text-[#003366]">
-              {publication.publication_type_id ||
-                "Publication"}
+              {publication.publication_type?.name || "Publication"}
             </span>
 
             {/* =================================================
@@ -449,8 +435,7 @@ export default function BookDetails() {
                   </p>
 
                   <p className="break-all font-semibold text-gray-800">
-                    {publication.publication_type_id ||
-                      "N/A"}
+                    {publication.publication_type?.name || "Publication"}
                   </p>
 
                 </div>
@@ -627,25 +612,7 @@ export default function BookDetails() {
 
                 <div className="mt-4 space-y-3 text-sm">
 
-                  {/* --------------------------------------------
-                      AUTHORS
-                      -------------------------------------------- */}
-
-                  {publication.authors &&
-                    publication.authors.length > 0 && (
-                      <div className="flex justify-between gap-4 border-b pb-3">
-
-                        <span className="shrink-0 text-gray-500">
-                          Authors
-                        </span>
-
-                        <span className="text-right font-semibold text-gray-800">
-                          {authorNames}
-                        </span>
-
-                      </div>
-                    )}
-
+                
                   {/* --------------------------------------------
                       CATEGORIES
                       -------------------------------------------- */}

@@ -290,13 +290,11 @@ export default function ViewPublicationModal({
                       </span>
 
                       <PublicationStatusBadge
-                        status={
-                          (publication.status?.name ?? "Draft") as
-                            | "Draft"
-                            | "Pending Review"
-                            | "Published"
-                            | "Archived"
-                        }
+                          status={
+                              publication.is_active
+                                  ? "Published"
+                                  : "Archived"
+                          }
                       />
 
                     </div>
@@ -500,7 +498,11 @@ export default function ViewPublicationModal({
                     <div className="mt-2">
 
                       <PublicationStatusBadge
-                        status={publication.is_active ? "Published" : "Draft"}
+                          status={
+                              publication.is_active
+                                  ? "Published"
+                                  : "Archived"
+                          }
                       />
 
                     </div>

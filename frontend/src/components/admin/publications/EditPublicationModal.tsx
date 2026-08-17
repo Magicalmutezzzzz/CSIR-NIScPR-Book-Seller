@@ -100,12 +100,7 @@ export default function EditPublicationModal({
           revenue: publication.revenue ?? 0,
 
           status:
-              (publication.status?.name as
-                  | "Draft"
-                  | "Pending Review"
-                  | "Published"
-                  | "Archived") ??
-              "Draft",
+                (publication.is_active ? "Published" : "Draft"),
 
           created:
               publication.created ??
