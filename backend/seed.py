@@ -68,7 +68,7 @@ try:
     print("Database Seeded Successfully")
     print("================================")
     print("Admin:")
-    print("  Email    : admin@niscpr.in")
+    print("  Email    : admin@ni    backend/seed.pyscpr.in")
     print("  Password : CSIR-Admin@110012")
     print("")
     print("Customer:")
