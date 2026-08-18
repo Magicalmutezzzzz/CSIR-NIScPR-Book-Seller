@@ -27,13 +27,13 @@ export default function BookCard({
 }: Props) {
   const wished = customerDataService.getWishlist().includes(id);
   return (
-    <div className="group overflow-hidden rounded-2xl bg-white border border-gray-200 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
+    <div className="mx-auto w-[250px] overflow-hidden rounded-2xl bg-white shadow transition hover:shadow-lg">
       {/* Image */}
-      <div className="relative h-72 overflow-hidden bg-gray-100">
+      <div className="flex h-[360px] items-center justify-center bg-gray-100 p-3">
         <img
           src={image}
           alt={title}
-          className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
+          className="h-full w-auto object-contain transition duration-300 group-hover:scale-105"
         />
 
         {stock !== undefined && (
@@ -44,7 +44,7 @@ export default function BookCard({
       </div>
 
       {/* Body */}
-      <div className="space-y-3 p-5">
+      <div className="flex flex-1 flex-col p-5">
         <div className="flex items-center justify-between">
           <span className="rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold text-[#003366]">
             {category}
@@ -61,7 +61,7 @@ export default function BookCard({
 
         <p className="text-sm text-gray-500">{author}</p>
 
-        <div className="flex items-center justify-between pt-2">
+        <div className="flex items-center justify-between pt-4">
           <span className="text-2xl font-bold text-green-600">
             {price}
           </span>

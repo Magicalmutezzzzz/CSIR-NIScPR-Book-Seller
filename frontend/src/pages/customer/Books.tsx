@@ -336,21 +336,19 @@ export default function Books() {
 
                   <div
                     key={book.id}
-                    className="overflow-hidden rounded-2xl bg-white shadow transition hover:shadow-lg"
-                  >
-
-                    <img
-                      src={
-                        book.cover_image ||
-                        "/DefaultBook.jpg"
-                      }
-                      alt={book.title}
-                      className="h-64 w-full object-cover"
-                    />
+                    className="mx-auto flex h-full w-[220px] flex-col overflow-hidden rounded-2xl bg-white shadow transition hover:-translate-y-1 hover:shadow-xl"
+                   >
+                    <div className="flex h-[340px] items-center justify-center bg-gray-100 p-3">
+                      <img
+                        src={book.cover_image || "/DefaultBook.jpg"}
+                        alt={book.title}
+                        className="max-h-full max-w-full object-contain"
+                      />
+                    </div>
 
                     <div className="flex flex-1 flex-col p-5">
 
-                      <h3 className="mt-3 text-xl font-semibold text-[#003366]">
+                      <h3 className="mt-3 line-clamp-2 min-h-[60px] text-lg font-semibold text-[#003366]">
                         {book.title}
                       </h3>
 
