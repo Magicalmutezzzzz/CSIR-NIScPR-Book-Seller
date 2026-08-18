@@ -314,7 +314,7 @@ export default function Books() {
 
         ) : (
 
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
 
             {filteredBooks.map(
               (book) => {
@@ -348,7 +348,7 @@ export default function Books() {
                       className="h-64 w-full object-cover"
                     />
 
-                    <div className="p-5">
+                    <div className="flex flex-1 flex-col p-5">
 
                       <h3 className="mt-3 text-xl font-semibold text-[#003366]">
                         {book.title}
@@ -362,7 +362,7 @@ export default function Books() {
                           : "Year unavailable"}
                       </p>
 
-                      <div className="mt-4 flex items-center justify-between">
+                      <div className="mt-auto pt-4 flex items-center justify-between">
 
                         <span className="text-lg font-bold text-[#003366]">
                           ₹{book.price}
