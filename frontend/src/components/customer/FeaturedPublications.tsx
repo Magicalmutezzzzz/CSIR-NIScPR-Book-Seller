@@ -9,14 +9,15 @@ export default function FeaturedPublications() {
 
   const [publications, setPublications] = useState<Publication[]>([]);
 
-  useEffect(() => {
-    loadFeatured();
-  }, []);
-
   async function loadFeatured() {
     const data = await publicationService.getFeatured();
     setPublications(data);
   }
+
+    useEffect(() => {
+    loadFeatured();
+  }, []);
+
 
   return (
     <section className="py-20 bg-white">
@@ -47,18 +48,17 @@ export default function FeaturedPublications() {
                   alt={publication.title}
                   className="h-80 w-full object-cover transition duration-500 group-hover:scale-105"
                 />
-
+            
                 {/* Featured Badge */}
                 <span className="absolute left-4 top-4 rounded-full bg-yellow-400 px-3 py-1 text-xs font-bold text-black shadow">
                   Featured
                 </span>
 
-                {/* Category */}
+                {/* Publication Type */}
                 <span className="absolute bottom-4 left-4 rounded-full bg-[#003366] px-3 py-1 text-xs font-semibold text-white">
-                  {publication.publication_type_id}
+                  {publication.publication_type?.name}
                 </span>
-              </div>
-
+              </div>  
               {/* Body */}
               <div className="p-6">
                 <h3 className="line-clamp-2 text-xl font-bold text-[#003366]">
