@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { ShoppingCart, Eye, Heart } from "lucide-react";
+import { ShoppingCart, Heart } from "lucide-react";
 import { customerDataService } from "../../services/customerDataService";
 
 type Props = {
@@ -55,9 +55,12 @@ export default function BookCard({
           )}
         </div>
 
-        <h3 className="line-clamp-2 text-lg font-bold text-[#003366]">
+        <Link
+          to={`/customer/book/${id}`}
+          className="block line-clamp-2 text-lg font-bold text-[#003366] hover:text-blue-700 hover:underline transition"
+        >
           {title}
-        </h3>
+        </Link>
 
         <p className="text-sm text-gray-500">{author}</p>
 
@@ -67,12 +70,6 @@ export default function BookCard({
           </span>
 
           <div className="flex gap-2">
-            <Link
-              to={`/customer/book/${id}`}
-              className="rounded-lg border border-gray-300 p-2 transition hover:bg-gray-100"
-            >
-              <Eye size={18} />
-            </Link>
 
             <button onClick={() => { customerDataService.toggleWishlist(id); window.location.reload(); }} aria-label="Toggle wishlist" className={`rounded-lg border p-2 transition ${wished ? "border-red-200 bg-red-50 text-red-600" : "border-gray-300 hover:bg-gray-100"}`}>
               <Heart size={18} className={wished ? "fill-current" : ""} />

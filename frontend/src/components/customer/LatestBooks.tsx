@@ -62,7 +62,7 @@ export default function LatestBooks() {
             return (
               <div
                 key={book.id}
-                className="group overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl"
+                className="flex flex-col overflow-hidden rounded-2xl bg-white shadow transition hover:-translate-y-1 hover:shadow-xl"
               >
                 {/* Image */}
                 <div className="relative overflow-hidden bg-gray-100">
