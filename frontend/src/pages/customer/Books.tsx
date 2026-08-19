@@ -5,14 +5,9 @@ import {
 } from "react";
 
 import {
-  Eye,
   Heart,
   ShoppingCart,
 } from "lucide-react";
-
-import {
-  useNavigate,
-} from "react-router-dom";
 
 import GlobalNavbar from "../../components/common/GlobalNavbar";
 
@@ -33,8 +28,6 @@ import type {
 } from "../../types/publication";
 
 export default function Books() {
-
-  const navigate = useNavigate();
 
   const [books, setBooks] =
     useState<Publication[]>([]);
@@ -367,19 +360,6 @@ export default function Books() {
                         </span>
 
                         <div className="flex items-center gap-2">
-
-                          <button
-                            type="button"
-                            onClick={() =>
-                              navigate(
-                                `/customer/book/${book.id}`
-                              )
-                            }
-                            className="rounded-lg bg-blue-100 p-2 text-[#003366] hover:bg-blue-200"
-                            title="View Details"
-                          >
-                            <Eye size={18} />
-                          </button>
 
                           <button
                             type="button"
