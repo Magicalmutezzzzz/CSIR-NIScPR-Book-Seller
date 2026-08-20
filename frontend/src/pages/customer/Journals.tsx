@@ -7,8 +7,8 @@ import BookCard from "../../components/customer/BookCard";
 import GlobalNavbar from "../../components/common/GlobalNavbar";
 import { publicationService } from "../../services/publicationService";
 
-export default function Magazines() {
-  const [magazines, setMagazines] = useState<Publication[]>([]);
+export default function Journals() {
+  const [journal, setjournal] = useState<Publication[]>([]);
   const [loading, setLoading] = useState(true);
 
   const [search, setSearch] = useState("");
@@ -16,18 +16,18 @@ export default function Magazines() {
   const [sortBy, setSortBy] = useState("latest");
 
   useEffect(() => {
-    async function loadMagazines() {
+    async function loadjournal() {
       try {
-        const data = await publicationService.getMagazines();
-        setMagazines(data);
+        const data = await publicationService.getJournals();
+        setjournal(data);
       } catch (error) {
-        console.error("Failed to load magazines:", error);
+        console.error("Failed to load Journals:", error);
       } finally {
         setLoading(false);
       }
     }
 
-    loadMagazines();
+    loadjournal();
   }, []);
 
   const categories = useMemo(() => {
@@ -35,16 +35,16 @@ export default function Magazines() {
       "All",
       ...Array.from(
         new Set(
-          magazines.flatMap((item) =>
+          journal.flatMap((item) =>
             item.categories?.map((c) => c.name) ?? []
           )
         )
       ),
     ];
-  }, [magazines]);
+  }, [journal]);
 
-  const filteredMagazines = useMemo(() => {
-    let filtered = [...magazines];
+  const filteredjournal = useMemo(() => {
+    let filtered = [...journal];
 
     if (category !== "All") {
       filtered = filtered.filter((item) =>
@@ -88,7 +88,7 @@ export default function Magazines() {
     }
 
     return filtered;
-  }, [magazines, search, category, sortBy]);
+  }, [journal, search, category, sortBy]);
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -105,11 +105,11 @@ export default function Magazines() {
 
             <div>
               <h1 className="text-5xl font-bold text-white">
-                Scientific Magazines
+                Scientific journal
               </h1>
 
               <p className="mt-3 max-w-2xl text-blue-100">
-                Explore popular science magazines
+                Explore popular science journal
                 published by CSIR–NIScPR.
               </p>
             </div>
@@ -131,7 +131,7 @@ export default function Magazines() {
 
               <input
                 type="text"
-                placeholder="Search magazines..."
+                placeholder="Search journal..."
                 value={search}
                 onChange={(e) =>
                   setSearch(e.target.value)
@@ -188,11 +188,11 @@ export default function Magazines() {
 
         <div className="mt-8 flex flex-wrap items-center justify-between gap-4">
           <h2 className="text-3xl font-bold text-[#003366]">
-            Available Magazines
+            Available journal
           </h2>
 
           <div className="rounded-full bg-[#003366] px-5 py-2 font-semibold text-white">
-            {filteredMagazines.length} Publications
+            {filteredjournal.length} Publications
           </div>
         </div>
 
@@ -202,10 +202,10 @@ export default function Magazines() {
           <div className="mt-12 text-center">
             Loading...
           </div>
-        ) : filteredMagazines.length === 0 ? (
+        ) : filteredjournal.length === 0 ? (
           <div className="mt-12 rounded-3xl bg-white p-16 text-center shadow">
             <h3 className="text-2xl font-bold text-[#003366]">
-              No Magazine Found
+              No journal Found
             </h3>
 
             <p className="mt-3 text-gray-500">
@@ -214,30 +214,30 @@ export default function Magazines() {
           </div>
         ) : (
           <div className="mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {filteredMagazines.map(
-              (magazine) => (
+            {filteredjournal.map(
+              (journal) => (
                 <BookCard
-                  key={magazine.id}
-                  id={magazine.id}
-                  title={magazine.title}
+                  key={journal.id}
+                  id={journal.id}
+                  title={journal.title}
                   author={
-                    magazine.author ?? "Unknown"
+                    journal.author ?? "Unknown"
                   }
                   category={
-                    magazine.categories
+                    journal.categories
                       ?.map((c) => c.name)
                       .join(", ") ?? "General"
                   }
                   image={
-                    magazine.cover_image ||
+                    journal.cover_image ||
                     "/DefaultBook.jpg"
                   }
-                  price={magazine.price}
-                  stock={magazine.stock}
+                  price={journal.price}
+                  stock={journal.stock}
                   year={
-                    magazine.publication_date
+                    journal.publication_date
                       ? new Date(
-                          magazine.publication_date
+                          journal.publication_date
                         ).getFullYear()
                       : undefined
                   }

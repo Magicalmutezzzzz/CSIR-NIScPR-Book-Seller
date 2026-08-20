@@ -96,6 +96,8 @@ export const publicationService = {
     const typeId =
       await getTypeId("Journal");
 
+      console.log("Journal Type ID:", typeId);
+
     if (!typeId) {
       return [];
     }
@@ -104,6 +106,8 @@ export const publicationService = {
       await getPublications({
         limit: 100,
       });
+
+      console.log(publications);
 
     return publications.filter(
       (publication) =>
