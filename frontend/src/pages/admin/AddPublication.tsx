@@ -355,6 +355,10 @@ export default function AddPublication() {
       /*
        * Create publication
        */
+
+      console.log("Selected Type ID:", form.publicationTypeId);
+      console.log("Selected Type:", selectedTypeName);
+
       const publicationResponse =
         await api.post(
           "/publications",
