@@ -22,7 +22,6 @@ export default function BookCard({
   description,
   price,
   image,
-  category,
   stock,
   year,
 }: Props) {
@@ -70,9 +69,6 @@ export default function BookCard({
       <div className="flex flex-1 flex-col p-5">
 
         <div className="flex items-center justify-between">
-          <span className="rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold text-[#003366]">
-            {category}
-          </span>
 
           {year && (
             <span className="text-xs text-gray-500">

@@ -14,12 +14,14 @@ export default function Hero() {
         <div className="max-w-3xl">
 
           <span className="rounded-full bg-white/20 px-4 py-2 text-sm font-semibold backdrop-blur">
-            CSIR • National Institute of Science Communication & Policy Research
+
+          CSIR-National Institute of Science Communication and Information Resources
+          
           </span>
 
           <h1 className="mt-8 text-5xl font-bold leading-tight lg:text-6xl">
 
-            Explore India's
+            Explore CSIR-NIScPR's
 
             <span className="block text-yellow-300">
               Scientific Publications
@@ -96,7 +98,7 @@ export default function Hero() {
             />
 
             <h3 className="mt-4 text-4xl font-bold">
-              500+
+              200+
             </h3>
 
             <p className="mt-2 text-blue-100">
